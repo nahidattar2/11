@@ -84,6 +84,7 @@ li:nth-child(3) .rk{background:#b9733f;color:#fff}
 #qm .ft{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 #qm .ft button{flex:1;font:inherit;font-weight:800;font-size:1.1rem;padding:12px;border-radius:12px;border:2px solid var(--pri);cursor:pointer;background:var(--card);color:var(--pri)}
 #qm .ft .pri{background:var(--pri);color:#fff}
+.wxb{margin:4px auto 0;background:#fbe7e4;color:#c0392b;border-radius:10px;padding:1px 8px;font-weight:800;font-size:.85rem;width:max-content}
 </style>
 </head>
 <body>
@@ -176,8 +177,8 @@ function render(){
     for(var j=1;j<=N;j++)g+='<i class="gl" style="bottom:'+(j/N*100)+'%"></i>';
     var nm=showN?esc(r.name):"طالبة "+ar(i+1);
     h+='<div class="col"><div class="pa">'+g+'<span class="vl" style="bottom:calc('+pct+'% + 4px)">'+ar(r.score)+'</span><div class="br'+(nw?' new':'')+'" style="height:'+pct+'%"></div>'+
-       '<span class="tip">'+nm+' · فصل '+ar(r.cls)+' · '+r.score+'/'+N+' · '+mmss(r.secs)+'</span></div>'+
-       '<div class="nmx">'+(showN&&L.length>12?esc(String(r.name).trim().split(/\s+/)[0]):nm)+'</div><div class="clx">فصل '+ar(r.cls)+'</div></div>';
+       '<span class="tip">'+nm+' · فصل '+ar(r.cls)+' · '+r.score+'/'+N+' · '+mmss(r.secs)+(r.exits>0?' · خرجت '+ar(r.exits)+' مرات':'')+'</span></div>'+
+       '<div class="nmx">'+(showN&&L.length>12?esc(String(r.name).trim().split(/\s+/)[0]):nm)+'</div><div class="clx">فصل '+ar(r.cls)+'</div>'+(r.exits>0?'<div class="wxb" title="مرات الخروج من صفحة الاختبار">⚠️ '+ar(r.exits)+'</div>':'')+'</div>';
   });
   var ya='<div class="ya">';for(var j=0;j<=N;j++)ya+='<span style="bottom:calc('+(j/N*300)+'px)">'+ar(j)+'</span>';ya+='</div>';
   $("ch").innerHTML=h;

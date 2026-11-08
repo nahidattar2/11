@@ -48,6 +48,11 @@ button:disabled{opacity:.4;cursor:default}
 .sent{text-align:center;font-size:.9rem;margin:6px 0 0}
 .logo{display:block;background:#fff;border-radius:14px;padding:10px 14px;margin:0 auto 12px;max-width:300px}.logo img{display:block;width:100%;height:auto}
 .ltr{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;direction:ltr;unicode-bidi:isolate;display:inline-block}
+#wx{position:fixed;inset:0;background:rgba(20,12,40,.7);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+#wx.on{display:flex}
+#wx .bx{background:var(--card);border-radius:18px;padding:24px;max-width:440px;text-align:center;border:3px solid var(--bad)}
+#wx h3{margin:0 0 8px;color:var(--bad);font-size:1.4rem}#wx p{margin:0 0 16px;line-height:1.8}
+#s1,#s2{-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
@@ -64,6 +69,7 @@ button:disabled{opacity:.4;cursor:default}
   <button class="full" id="go">ابدئي الاختبار</button>
   <p class="sent" id="msg" style="color:var(--bad);font-weight:700"></p>
   <p class="small">يمكنكِ الرجوع وتعديل إجاباتك قبل التسليم. يُسمح بأداء الاختبار مرة واحدة فقط.</p>
+  <p class="small" style="color:var(--bad);font-weight:700">⚠️ يُفتح الاختبار بملء الشاشة، والخروج من صفحته يُسجَّل، وبعد ٣ مرات خروج يُسلَّم تلقائيًا.</p>
 </div>
 
 <div id="s1" class="hide">
@@ -92,6 +98,7 @@ button:disabled{opacity:.4;cursor:default}
 </div>
 
 </div>
+<div id="wx"><div class="bx"><h3 id="wxt"></h3><p id="wxm"></p><button id="wxb" class="full" style="margin:0">العودة إلى الاختبار</button></div></div>
 <script>
 // ↓↓ ضعي هنا رابط Apps Script (ينتهي بـ /exec)
 var API="https://script.google.com/macros/s/AKfycby_HYmh-nMk9-EO3Q86QHOciMCGOry3h62pj-Zrhzy-qTym2UEthhksXF8u_-Si5X58KA/exec";
@@ -109,9 +116,13 @@ var Q=[
  h:'إرشاد: حدّدي الزاوية في '+L('△JKL')+' التي تناظر '+L('∠Q')+' أولًا.',
  e:L('∠Q')+' تناظر '+L('∠K')+'، إذن '+L('m∠K = 75°')+'. ومجموع زوايا المثلث '+L('180°')+': '+L('m∠L = 180° − (40° + 75°) = 65°')+'.'}
 ];
-var N=Q.length,T=180;
-var t0=0,ans=[],cur=0,left=T,iv=null,done=false,KEY="final33-state";
-function save(st,extra){try{var o={st:st,n:$("nm").value,c:$("cl").value,t0:t0,a:ans,cur:cur};for(var k in extra)o[k]=extra[k];localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+var N=Q.length,T=180,MAXX=3;
+var Q0=Q;
+var t0=0,ans=[],cur=0,left=T,iv=null,done=false,KEY="final33-state",ORD=null,OPT=null,exits=0,lastX=0,why="";
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function mk(){ORD=shuf(Q0.map(function(_,i){return i}));OPT=ORD.map(function(qi){return shuf(Q0[qi].o.map(function(_,j){return j}))})}
+function build(){Q=ORD.map(function(qi,k){var q=Q0[qi],oo=OPT[k];return{t:q.t,q:q.q,h:q.h,f:q.f,e:q.e,o:oo.map(function(j){return q.o[j]}),a:oo.indexOf(q.a),oi:qi}})}
+function save(st,extra){try{var o={st:st,n:$("nm").value,c:$("cl").value,t0:t0,a:ans,cur:cur,ord:ORD,opt:OPT,x:exits,why:why};for(var k in extra)o[k]=extra[k];localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
 function getState(){try{return JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){return null}}
 function norm(x){return String(x||"").replace(/\s+/g," ").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").trim()}
 function already(name,cls,cb){
@@ -126,6 +137,30 @@ function already(name,cls,cb){
 }
 function $(i){return document.getElementById(i)}
 function show(n){["s0","s1","s2"].forEach(function(s){$(s).className=(s==n?"":"hide")+(s=="s0"?" card":"")})}
+/* ملء الشاشة */
+var DE=document.documentElement;
+function isFs(){return !!(document.fullscreenElement||document.webkitFullscreenElement)}
+function fsOK(){return !!(DE.requestFullscreen||DE.webkitRequestFullscreen)}
+function reqFs(){try{var p=(DE.requestFullscreen||DE.webkitRequestFullscreen).call(DE);if(p&&p.catch)p.catch(function(){})}catch(e){}}
+function exitFs(){try{if(isFs())(document.exitFullscreen||document.webkitExitFullscreen).call(document)}catch(e){}}
+/* رصد الخروج */
+function running(){return !done&&$("s1").className.indexOf("hide")<0}
+function leave(){
+ if(!running())return;
+ var now=Date.now();if(now-lastX<1500)return;lastX=now;
+ exits++;save("run");
+ if(exits>=MAXX){why="exit";$("wx").className="";finish(true);return}
+ warn("⚠️ خرجتِ من صفحة الاختبار","هذا الخروج رقم "+exits+" من "+MAXX+". عند الخروج رقم "+MAXX+" يُسلَّم الاختبار تلقائيًا، وتظهر مرات الخروج للمعلمة.");
+}
+function warn(t,m){$("wxt").textContent=t;$("wxm").textContent=m;$("wx").className="on"}
+$("wxb").onclick=function(){$("wx").className="";if(fsOK()&&!isFs())reqFs()};
+document.addEventListener("visibilitychange",function(){if(document.hidden)leave()});
+window.addEventListener("blur",function(){setTimeout(function(){if(!document.hasFocus())leave()},300)});
+function onFs(){if(!isFs()&&running()&&fsOK())leave()}
+document.addEventListener("fullscreenchange",onFs);document.addEventListener("webkitfullscreenchange",onFs);
+/* منع النسخ */
+["copy","cut","contextmenu","selectstart","dragstart"].forEach(function(ev){document.addEventListener(ev,function(e){if(!/INPUT|TEXTAREA/.test((e.target&&e.target.tagName)||""))e.preventDefault()})});
+document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&/^[acpsux]$/i.test(e.key)&&!/INPUT/.test(e.target.tagName))e.preventDefault()});
 function render(){
  var q=Q[cur];
  $("cnt").textContent="السؤال "+(cur+1)+" من "+N;
@@ -147,11 +182,12 @@ function tick(){
  if(left<=0){finish(true);return}
  left--;
 }
+function marks(){return Q0.map(function(_,oi){for(var k=0;k<Q.length;k++)if(Q[k].oi===oi)return ans[k]===Q[k].a?1:0;return 0})}
 function send(sc){
  var el=$("snt");
  if(!/^https:/.test(API)){el.textContent="";return}
  el.textContent="جارٍ إرسال الدرجة…";
- var body=JSON.stringify({quiz:QUIZ,name:$("nm").value.trim(),cls:$("cl").value,score:sc,total:N,secs:Math.round((Date.now()-t0)/1000),marks:Q.map(function(q,i){return ans[i]===q.a?1:0})});
+ var body=JSON.stringify({quiz:QUIZ,name:$("nm").value.trim(),cls:$("cl").value,score:sc,total:N,secs:Math.round((Date.now()-t0)/1000),marks:marks(),exits:exits});
  fetch(API,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
   .then(function(){el.textContent="✓ تم إرسال درجتك للمعلمة";el.style.color="var(--ok)"})
   .catch(function(){el.textContent="تعذّر الإرسال، أخبري المعلمة";el.style.color="var(--bad)"});
@@ -161,7 +197,7 @@ function finish(auto,restored){
  if(done)return;
  var ml=[];ans.forEach(function(x,i){if(x===null)ml.push(i+1)});
  if(!auto&&!restored&&ml.length&&!confirm("⚠️ تنبيه: لا يوجد حل "+(ml.length>1?"للأسئلة رقم ":"للسؤال رقم ")+ml.join(" و ")+".\nهل تريدين التسليم دون حله؟\n(إلغاء = العودة إلى أول سؤال بدون حل)")){cur=ml[0]-1;render();return}
- done=true;clearInterval(iv);
+ done=true;clearInterval(iv);$("wx").className="";
  var sc=0,h="";
  Q.forEach(function(q,i){
   var ok=ans[i]===q.a;if(ok)sc++;
@@ -177,19 +213,21 @@ function finish(auto,restored){
  $("sc").textContent=sc+" / "+N;
  $("who").textContent=($("nm").value||"")+($("cl").value?" — الفصل "+$("cl").value:"");
  $("lv").textContent=sc==N?"ممتازة! إتقان تام 🌟":sc>=N*0.8?"مستوى جيد جدًا":sc>=N*0.6?"مستوى جيد، راجعي الأسئلة الخاطئة":"تحتاجين إلى مراجعة الدرس 3-3";
- $("bk").textContent=(auto?"انتهى الوقت وتم التسليم تلقائيًا. ":"")+"تم تسليم الاختبار، ولا يمكن إعادته.";
+ $("bk").textContent=(why=="exit"?"تم التسليم تلقائيًا بسبب الخروج من صفحة الاختبار "+MAXX+" مرات. ":auto?"انتهى الوقت وتم التسليم تلقائيًا. ":"")+"تم تسليم الاختبار، ولا يمكن إعادته.";
  if(!restored){send(sc);save("done",{s:sc,auto:!!auto})}
+ exitFs();
  show("s2");window.scrollTo(0,0);
 }
 $("go").onclick=function(){
  if(!$("nm").value.trim()){$("nm").focus();$("nm").style.borderColor="var(--bad)";return}
  if(!$("cl").value){$("clw").style.outline="2px solid var(--bad)";return}
  if(getState()){location.reload();return}
+ if(fsOK())reqFs();
  var go=$("go");go.disabled=true;go.textContent="جارٍ التحقق…";$("msg").textContent="";
  already($("nm").value,$("cl").value,function(dup){
   go.disabled=false;go.textContent="ابدئي الاختبار";
-  if(dup){$("msg").textContent="سبق أن أدّيتِ هذا الاختبار، ولا يُسمح بإعادته.";return}
-  t0=Date.now();
+  if(dup){exitFs();$("msg").textContent="سبق أن أدّيتِ هذا الاختبار، ولا يُسمح بإعادته.";return}
+  t0=Date.now();mk();build();exits=0;why="";
   ans=Q.map(function(){return null});cur=0;left=T;done=false;
   save("run");
   show("s1");render();tick();iv=setInterval(tick,1000);
@@ -197,11 +235,15 @@ $("go").onclick=function(){
 };
 (function(){
  var st=getState();if(!st)return;
- $("nm").value=st.n||"";$("cl").value=st.c||"";t0=st.t0;ans=st.a||Q.map(function(){return null});cur=st.cur||0;
+ $("nm").value=st.n||"";$("cl").value=st.c||"";t0=st.t0;cur=st.cur||0;exits=st.x||0;why=st.why||"";
+ if(st.ord&&st.opt){ORD=st.ord;OPT=st.opt}else mk();build();
+ ans=st.a||Q.map(function(){return null});
  if(st.st=="done"){finish(st.auto,true);return}
  left=T-Math.floor((Date.now()-t0)/1000);
  if(left<=0){left=0;finish(true);return}
  show("s1");render();tick();iv=setInterval(tick,1000);
+ if(exits>=MAXX){why="exit";finish(true);return}
+ warn("تم إعادة فتح الاختبار","مرات الخروج حتى الآن: "+exits+" من "+MAXX+". اضغطي للمتابعة.");
 })();
 $("ops").onclick=function(e){
  var b=e.target.closest(".opt");if(!b)return;
