@@ -64,6 +64,26 @@ li:nth-child(3) .rk{background:#b9733f;color:#fff}
 .empty{text-align:center;color:var(--mut);padding:30px 0}
 .cfg{background:var(--badb);color:var(--bad);border-radius:12px;padding:12px;margin-bottom:12px;font-weight:700}
 @media(max-width:800px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+
+.qb .lb{align-items:center;gap:8px}
+.qb .lb .sv{margin-inline-start:auto;margin-inline-end:10px;font:inherit;font-size:.85rem;font-weight:800;padding:4px 12px;border-radius:20px;border:2px solid var(--pri);background:var(--card);color:var(--pri);cursor:pointer;white-space:nowrap}
+.qb .lb .sv:hover{background:var(--pri2)}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif}
+#qm{position:fixed;inset:0;background:rgba(20,12,40,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+#qm.on{display:flex}
+#qm .bx{background:var(--card);border-radius:20px;max-width:880px;width:100%;max-height:92vh;overflow:auto;padding:26px 30px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+#qm .hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#qm .tg{background:var(--pri2);color:var(--pri);border-radius:20px;padding:4px 14px;font-weight:800}
+#qm .x{margin-inline-start:auto;font:inherit;font-size:1.4rem;line-height:1;border:0;background:transparent;color:var(--mut);cursor:pointer}
+#qm .qq{font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:800;margin:0 0 16px;line-height:1.7}
+#qm .op{border:2px solid var(--bd);border-radius:14px;padding:12px 16px;margin-bottom:10px;font-size:clamp(1.1rem,2vw,1.5rem);background:var(--bg)}
+#qm.sol .op.ok{border-color:#1b8a4b;background:#e3f5ea;font-weight:800}
+#qm.sol .op.ok::after{content:"  ✓";color:#1b8a4b}
+#qm .ex{display:none;margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--pri2);font-size:clamp(1.05rem,1.8vw,1.35rem);line-height:1.8}
+#qm.sol .ex{display:block}
+#qm .ft{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+#qm .ft button{flex:1;font:inherit;font-weight:800;font-size:1.1rem;padding:12px;border-radius:12px;border:2px solid var(--pri);cursor:pointer;background:var(--card);color:var(--pri)}
+#qm .ft .pri{background:var(--pri);color:#fff}
 </style>
 </head>
 <body>
@@ -92,7 +112,27 @@ li:nth-child(3) .rk{background:#b9733f;color:#fff}
   <div class="card"><h2>نسبة الإجابات الصحيحة لكل سؤال</h2><div id="qs"></div></div>
 </div>
 </div>
+<div id="qm"><div class="bx"><div class="hd"><span class="tg" id="qmt"></span><span id="qmp" style="color:var(--mut);font-weight:700"></span><button class="x" id="qmx" aria-label="إغلاق">✕</button></div>
+<p class="qq" id="qmq"></p><div id="qmf"></div><div id="qmo"></div><div class="ex" id="qme"></div>
+<div class="ft"><button class="pri" id="qms">✓ عرض الحل</button><button id="qmn">السؤال التالي ←</button></div></div></div>
 <script>
+var QD=(function(){
+function L(s){return '<span class="ltr">'+s+'</span>'}
+var Q=[
+{t:"m",q:'إذا كان '+L('△MNP ≅ △QRS')+'، فأيّ العبارات الآتية صحيحة؟',
+ o:[L('∠N ≅ ∠R'),L('<span style="text-decoration:overline">MP</span> ≅ <span style="text-decoration:overline">QR</span>'),L('∠P ≅ ∠Q'),L('<span style="text-decoration:overline">NP</span> ≅ <span style="text-decoration:overline">QS</span>')],a:0,
+ e:'التناظر حسب ترتيب الرؤوس: '+L('M ↔ Q')+'، '+L('N ↔ R')+'، '+L('P ↔ S')+'؛ إذن '+L('∠N ≅ ∠R')+'. أما '+L('MP')+' فيناظر '+L('QS')+'، و '+L('NP')+' يناظر '+L('RS')+'.'},
+{t:"m",q:'إذا كان '+L('△ABC ≅ △DEF')+'، و '+L('m∠A = (2x + 10)°')+'، و '+L('m∠D = 50°')+'، فما قيمة x؟',
+ o:[L('15'),L('20'),L('25'),L('30')],a:1,
+ e:L('∠A')+' تناظر '+L('∠D')+'، والزوايا المتناظرة في المثلثات المتطابقة متطابقة: '+L('2x + 10 = 50')+' ⇐ '+L('2x = 40')+' ⇐ '+L('x = 20')+'.'},
+{t:"h",q:'إذا كان '+L('△JKL ≅ △PQR')+'، و '+L('m∠J = 40°')+'، و '+L('m∠Q = 75°')+'، فما '+L('m∠L')+'؟',
+ o:[L('40°'),L('65°'),L('75°'),L('115°')],a:1,
+ h:'إرشاد: حدّدي الزاوية في '+L('△JKL')+' التي تناظر '+L('∠Q')+' أولًا.',
+ e:L('∠Q')+' تناظر '+L('∠K')+'، إذن '+L('m∠K = 75°')+'. ومجموع زوايا المثلث '+L('180°')+': '+L('m∠L = 180° − (40° + 75°) = 65°')+'.'}
+];
+
+return Q;})();
+
 // ↓↓ ضعي هنا نفس رابط Apps Script (ينتهي بـ /exec)
 var API="https://script.google.com/macros/s/AKfycby_HYmh-nMk9-EO3Q86QHOciMCGOry3h62pj-Zrhzy-qTym2UEthhksXF8u_-Si5X58KA/exec";
 var QUIZ="تقويم نهائي - المثلثات المتطابقة",N=3,EVERY=5000;
@@ -143,7 +183,7 @@ function render(){
   $("ch").innerHTML=h;
   var w=$("ch").parentNode,old=w.querySelector(".ya");if(old)old.remove();if(n)w.insertAdjacentHTML("afterbegin",ya);
   var q="";
-  qc.forEach(function(c,i){var p=n?Math.round(c/n*100):0;q+='<div class="qb"><div class="lb"><span>س'+ar(i+1)+': '+QN[i]+'</span><span>'+ar(p)+'٪</span></div><div class="tr"><i style="width:'+p+'%"></i></div></div>'});
+  qc.forEach(function(c,i){var p=n?Math.round(c/n*100):0;qmP[i]=n?p:null;q+='<div class="qb"><div class="lb"><span>س'+ar(i+1)+': '+QN[i]+'</span><button class="sv" data-q="'+i+'">👁 السؤال والحل</button><span>'+ar(p)+'٪</span></div><div class="tr"><i style="width:'+p+'%"></i></div></div>'});
   $("qs").innerHTML=q;
 }
 $("fc").onclick=function(e){var b=e.target.closest("button");if(!b)return;fC=b.getAttribute("data-c");[].forEach.call(this.children,function(x){x.className=x===b?"on":""});render()};
@@ -156,6 +196,21 @@ function isFs(){return document.fullscreenElement||document.webkitFullscreenElem
 fsb.onclick=function(){if(isFs()){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{(de.requestFullscreen||de.webkitRequestFullscreen).call(de)}};
 function fsLbl(){fsb.textContent=isFs()?"✕ خروج من ملء الشاشة":"⛶ ملء الشاشة"}
 document.addEventListener("fullscreenchange",fsLbl);document.addEventListener("webkitfullscreenchange",fsLbl);
+
+var qmI=0,qmP=[];
+function qmOpen(i){var q=QD[i];if(!q)return;qmI=i;var m=$("qm");m.classList.remove("sol");
+ $("qmt").textContent="السؤال "+ar(i+1)+" من "+ar(QD.length);
+ $("qmp").textContent=qmP[i]!=null?"نسبة الإجابة الصحيحة: "+ar(qmP[i])+"٪":"";
+ $("qmq").innerHTML=q.q;$("qmf").innerHTML=q.f||"";
+ $("qmo").innerHTML=q.o.map(function(o,j){return '<div class="op'+(j==q.a?' ok':'')+'">'+"أبجد"[j]+") "+o+"</div>"}).join("");
+ $("qme").innerHTML=q.e;$("qms").textContent="✓ عرض الحل";
+ $("qmn").style.display=i<QD.length-1?"":"none";m.classList.add("on")}
+$("qms").onclick=function(){var m=$("qm");m.classList.toggle("sol");this.textContent=m.classList.contains("sol")?"إخفاء الحل":"✓ عرض الحل"};
+$("qmn").onclick=function(){qmOpen(qmI+1)};
+$("qmx").onclick=function(){$("qm").classList.remove("on")};
+$("qm").onclick=function(e){if(e.target===this)this.classList.remove("on")};
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("qm").classList.remove("on")});
+$("qs").onclick=function(e){var b=e.target.closest(".sv");if(b)qmOpen(+b.getAttribute("data-q"))};
 render();load();setInterval(load,EVERY);
 </script>
 </body>
