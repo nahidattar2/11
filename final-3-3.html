@@ -69,7 +69,7 @@ button:disabled{opacity:.4;cursor:default}
   <button class="full" id="go">ابدئي الاختبار</button>
   <p class="sent" id="msg" style="color:var(--bad);font-weight:700"></p>
   <p class="small">يمكنكِ الرجوع وتعديل إجاباتك قبل التسليم. يُسمح بأداء الاختبار مرة واحدة فقط.</p>
-  <p class="small" style="color:var(--bad);font-weight:700">⚠️ يُفتح الاختبار بملء الشاشة، والخروج من صفحته يُسجَّل، وبعد ٣ مرات خروج يُسلَّم تلقائيًا.</p>
+  <p class="small" style="color:var(--bad);font-weight:700">⚠️ يُفتح الاختبار بملء الشاشة، والخروج من صفحته يُسجَّل، وعند الخروج مرتين يُسلَّم تلقائيًا.</p>
 </div>
 
 <div id="s1" class="hide">
@@ -116,7 +116,7 @@ var Q=[
  h:'إرشاد: حدّدي الزاوية في '+L('△JKL')+' التي تناظر '+L('∠Q')+' أولًا.',
  e:L('∠Q')+' تناظر '+L('∠K')+'، إذن '+L('m∠K = 75°')+'. ومجموع زوايا المثلث '+L('180°')+': '+L('m∠L = 180° − (40° + 75°) = 65°')+'.'}
 ];
-var N=Q.length,T=180,MAXX=3;
+var N=Q.length,T=180,MAXX=2;
 var Q0=Q;
 var t0=0,ans=[],cur=0,left=T,iv=null,done=false,KEY="final33-state",ORD=null,OPT=null,exits=0,lastX=0,why="";
 function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -150,7 +150,7 @@ function leave(){
  var now=Date.now();if(now-lastX<1500)return;lastX=now;
  exits++;save("run");
  if(exits>=MAXX){why="exit";$("wx").className="";finish(true);return}
- warn("⚠️ خرجتِ من صفحة الاختبار","هذا الخروج رقم "+exits+" من "+MAXX+". عند الخروج رقم "+MAXX+" يُسلَّم الاختبار تلقائيًا، وتظهر مرات الخروج للمعلمة.");
+ warn("⚠️ خرجتِ من صفحة الاختبار","هذا الخروج الأول. إذا خرجتِ مرة ثانية يُسلَّم الاختبار تلقائيًا، وتظهر مرات الخروج للمعلمة.");
 }
 function warn(t,m){$("wxt").textContent=t;$("wxm").textContent=m;$("wx").className="on"}
 $("wxb").onclick=function(){$("wx").className="";if(fsOK()&&!isFs())reqFs()};
@@ -213,7 +213,7 @@ function finish(auto,restored){
  $("sc").textContent=sc+" / "+N;
  $("who").textContent=($("nm").value||"")+($("cl").value?" — الفصل "+$("cl").value:"");
  $("lv").textContent=sc==N?"ممتازة! إتقان تام 🌟":sc>=N*0.8?"مستوى جيد جدًا":sc>=N*0.6?"مستوى جيد، راجعي الأسئلة الخاطئة":"تحتاجين إلى مراجعة الدرس 3-3";
- $("bk").textContent=(why=="exit"?"تم التسليم تلقائيًا بسبب الخروج من صفحة الاختبار "+MAXX+" مرات. ":auto?"انتهى الوقت وتم التسليم تلقائيًا. ":"")+"تم تسليم الاختبار، ولا يمكن إعادته.";
+ $("bk").textContent=(why=="exit"?"تم التسليم تلقائيًا بسبب الخروج من صفحة الاختبار مرتين. ":auto?"انتهى الوقت وتم التسليم تلقائيًا. ":"")+"تم تسليم الاختبار، ولا يمكن إعادته.";
  if(!restored){send(sc);save("done",{s:sc,auto:!!auto})}
  exitFs();
  show("s2");window.scrollTo(0,0);
