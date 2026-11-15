@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تدريب مهارات فصل التوازي والتعامد</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Geeza Pro","GeezaPro","Noto Naskh Arabic","Segoe UI",Tahoma,sans-serif;background:#f3f4f7;color:#1f2233;line-height:1.8}
+.top{background:linear-gradient(135deg,#4b33b5,#7a68d6);color:#fff;padding:22px 18px 26px;text-align:center}
+.top h1{font-size:22px}.top .sk{font-size:15px;opacity:.95;margin-top:4px}
+.top .who{display:inline-block;margin-top:10px;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 16px;font-size:14px}
+.wrap{max-width:760px;margin:-14px auto 40px;padding:0 14px}
+.card{background:#fff;border-radius:14px;box-shadow:0 1px 5px rgba(30,30,60,.12);padding:18px 18px;margin-bottom:14px}
+h2{font-size:17px;color:#3d2a9c;margin-bottom:8px}
+.rule{background:#f7f6fe;border:1px solid #e1def5;border-radius:10px;padding:10px 14px;font-size:15px}
+.q{font-size:17px;margin:6px 0 10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.opt{border:2px solid #e1e3ea;border-radius:10px;padding:10px 12px;background:#fff;cursor:pointer;font:inherit;font-size:16px;text-align:center;transition:.15s}
+.opt:hover{border-color:#7a68d6;background:#f7f6fe}
+.opt.ok{border-color:#1a9e5a;background:#e3f5eb}.opt.no{border-color:#d64545;background:#fde8e8}
+.opt:disabled{cursor:default}
+.btn{display:inline-block;border:0;border-radius:10px;padding:10px 20px;font:inherit;font-size:16px;font-weight:bold;cursor:pointer;background:#4b33b5;color:#fff;margin-top:12px}
+.btn.ghost{background:#ece9fb;color:#4b33b5}
+.hint{display:none;margin-top:10px;background:#fff8e6;border:1px solid #f3d58a;border-radius:10px;padding:8px 12px;font-size:15px}
+.fb{margin-top:10px;border-radius:10px;padding:10px 14px;font-size:15px}
+.fb.ok{background:#e3f5eb;color:#137a45}.fb.no{background:#fde8e8;color:#b42323}
+.step{border-right:4px solid #7a68d6;padding-right:12px;margin-bottom:16px}
+.step .n{font-size:13px;color:#7a68d6;font-weight:bold}
+.done{opacity:.75}
+.m{direction:ltr;unicode-bidi:isolate;font-family:"Times New Roman",serif;font-size:1.08em}
+.fc{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.82em;line-height:1.15;margin:0 2px}
+.fc span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
+.fig{text-align:center;margin:6px 0}
+.fig svg{max-width:330px;width:100%;height:auto}
+.prog{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.prog i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35)}.prog i.on{background:#fff}
+.big{text-align:center;font-size:20px;font-weight:bold;padding:10px}
+label{display:block;margin:8px 0 4px;font-weight:bold}
+input,select{width:100%;font:inherit;font-size:16px;padding:8px 10px;border:2px solid #e1e3ea;border-radius:10px}
+.foot{text-align:center;color:#8a8ea0;font-size:13px;margin-top:16px}
+@media(max-width:520px){.opts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top"><h1 id="ttl">تدريب المهارة</h1><div class="sk" id="sk"></div><div class="who" id="who"></div></div>
+<div class="wrap" id="app"></div>
+<div class="foot">اختبار فصل التوازي والتعامد · معلمة الرياضيات: ناهد علي عطار · مدرسة الموهوبات التقنية الثانوية</div>
+<script>
+const SAVE_URL="https://script.google.com/macros/s/AKfycby_HYmh-nMk9-EO3Q86QHOciMCGOry3h62pj-Zrhzy-qTym2UEthhksXF8u_-Si5X58KA/exec";
+const P=new URLSearchParams(location.search);
+const SID=Math.min(10,Math.max(1,parseInt(P.get("s")||"1")));
+const MODE=P.get("m")==="e"?"e":"r";
+let NAME=P.get("name")||"", CLS=P.get("cls")||"";
+const T0=Date.now(); let saved=false, attempts=0;
+
+/* ---------- helpers ---------- */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+const neg=n=>n<0?"−"+Math.abs(n):""+n;
+function F(n,d){ if(d<0){n=-n;d=-d} const g=gcd(n,d);n/=g;d/=g;
+  if(d===1) return M(neg(n));
+  return `<bdi dir="ltr" class="m">${n<0?"−":""}<span class="fc"><span>${Math.abs(n)}</span><span>${d}</span></span></bdi>`;}
+const M=s=>`<bdi dir="ltr" class="m">${s}</bdi>`;
+function coefX(n,d,v){ // coefficient times variable
+  if(d<0){n=-n;d=-d} const g=gcd(n,d);n/=g;d/=g;
+  if(n===0) return "";
+  if(d===1){ if(n===1) return v; if(n===-1) return "−"+v; return neg(n)+v; }
+  return F(n,d)+v;}
+function lin(n,d,b,yv="y",xv="x"){ // y = (n/d)x + b
+  let s=yv+" = "; const c=coefX(n,d,xv);
+  if(c){ s+=c; if(b>0) s+=" + "+b; else if(b<0) s+=" − "+(-b); }
+  else s+=neg(b);
+  return M(s);}
+const minus=(v,k)=>k===0?v:(k>0?`(${v} − ${k})`:`(${v} + ${-k})`);
+const minusN=(v,k)=>k===0?v:(k>0?`${v} − ${k}`:`${v} + ${-k}`);
+function ptSlope(n,d,x1,y1){ const g=gcd(n,d); n/=g; d/=g; if(d<0){n=-n;d=-d}
+  let c = d===1 ? (n===1?"":n===-1?"−":neg(n)) : F(n,d);
+  return M(`${minusN("y",y1)} = ${c}${minus("x",x1)}`);}
+function expr(p,q){ return M(`(${p===1?"":p}x ${q>=0?"+ "+q:"− "+(-q)})°`); }
+function mk(correct,wrongs){ const seen=new Set([correct]); const w=[];
+  for(const x of wrongs){ if(!seen.has(x)){seen.add(x);w.push(x)} if(w.length===3)break; }
+  const all=shuf([correct,...w]); return {opts:all,ci:all.indexOf(correct)}; }
+function S(q,correct,wrongs,hint){ return Object.assign({q,hint},mk(correct,wrongs)); }
+
+/* ---------- figures ---------- */
+const FIGS={};
+function figT(given){ // two parallel lines cut by transversal, angles 1..8
+  const P1=[126,70],P2=[180,160];
+  const off=[[-22,-8],[12,-8],[12,22],[-24,22]];
+  let s=`<svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg" font-family="Times New Roman" font-size="15">
+  <line x1="15" y1="70" x2="285" y2="70" stroke="#1f2233" stroke-width="2"/><line x1="15" y1="160" x2="285" y2="160" stroke="#1f2233" stroke-width="2"/>
+  <line x1="90" y1="10" x2="216" y2="220" stroke="#4b33b5" stroke-width="2"/>
+  <text x="270" y="62" font-style="italic">ℓ</text><text x="270" y="152" font-style="italic">m</text><text x="78" y="22" font-style="italic" fill="#4b33b5">t</text>`;
+  for(let k=1;k<=8;k++){const c=k<=4?P1:P2,o=off[(k-1)%4]; const hl=given&&given.includes(k);
+    s+=`<text x="${c[0]+o[0]}" y="${c[1]+o[1]}" ${hl?'fill="#d64545" font-weight="bold"':''}>${k}</text>`}
+  return s+"</svg>";}
+const BOX={A:[0,0,0],B:[1,0,0],C:[1,1,0],D:[0,1,0],E:[0,0,1],F:[1,0,1],G:[1,1,1],H:[0,1,1]};
+const EDGES=["AB","BC","CD","DA","EF","FG","GH","HE","AE","BF","CG","DH"];
+function pr(v){const [x,y,z]=BOX[v];return [70+x*150+y*60,230-z*130-y*50]}
+function figBox(hl){ let s=`<svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg" font-family="Times New Roman" font-size="16">`;
+  for(const e of EDGES){const [a,b]=[pr(e[0]),pr(e[1])];const hid=e.includes("D");const h=hl&&hl.some(x=>x===e||x===e[1]+e[0]);
+    s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${h?'#d64545':'#1f2233'}" stroke-width="${h?3:2}" ${hid?'stroke-dasharray="6 5"':''}/>`;}
+  const lo={A:[-16,16],B:[6,16],C:[8,6],D:[-18,4],E:[-18,-4],F:[4,-6],G:[6,-6],H:[-6,-8]};
+  for(const v in BOX){const p=pr(v);s+=`<text x="${p[0]+lo[v][0]}" y="${p[1]+lo[v][1]}">${v}</text>`}
+  return s+"</svg>";}
+
+/* ---------- geometry of angles ---------- */
+const inter=n=>n<=4?"P":"Q", quad=n=>(n-1)%4;
+const isIn=n=>(inter(n)==="P"&&quad(n)>=2)||(inter(n)==="Q"&&quad(n)<=1);
+const left=n=>quad(n)===0||quad(n)===3;
+function relName(i,j){
+  if(inter(i)===inter(j)) return Math.abs(quad(i)-quad(j))===2?"متقابلتان بالرأس":"متجاورتان على مستقيم";
+  if(quad(i)===quad(j)) return "متناظرتان";
+  if(isIn(i)&&isIn(j)) return left(i)===left(j)?"متحالفتان":"متبادلتان داخليًا";
+  if(!isIn(i)&&!isIn(j)) return left(i)===left(j)?"متحالفتان خارجيًا":"متبادلتان خارجيًا";
+  return "متناظرتان";}
+const MAIN4=["متناظرتان","متبادلتان داخليًا","متبادلتان خارجيًا","متحالفتان"];
+function pairOf(rel){ // pick (i,j) from different intersections with relation rel
+  const all=[];for(let i=1;i<=4;i++)for(let j=5;j<=8;j++)if(relName(i,j)===rel)all.push(Math.random()<.5?[i,j]:[j,i]);
+  return pick(all);}
+const pos=n=>isIn(n)?"داخلية":"خارجية";
+const congr=(i,j)=>(i%2)===(j%2);
+
+/* ---------- skills ---------- */
+const SK=[null,
+{name:"العلاقات بين المستقيمات والمستويات",
+ rule:"<b>المتوازيان</b>: في مستوى واحد ولا يتقاطعان. <b>المتقاطعان</b>: يشتركان في نقطة. <b>المتخالفان</b>: لا يتقاطعان ولا يقعان في مستوى واحد. <b>المستويان المتوازيان</b> لا يشتركان في أي نقطة.",
+ gen(){ const rel=(a,b)=>{ if([...a].some(c=>b.includes(c))) return "متقاطعان";
+     const d=e=>{const p=BOX[e[0]],q=BOX[e[1]];return [0,1,2].findIndex(k=>p[k]!==q[k])};
+     return d(a)===d(b)?"متوازيان":"متخالفان"; };
+   const t=R(0,2);
+   if(t===0){ const want=pick(["متقاطعان","متوازيان","متخالفان"]); let a,b;
+     do{a=pick(EDGES);b=pick(EDGES)}while(a===b||rel(a,b)!==want);
+     const share=[...a].some(c=>b.includes(c));
+     const steps=[S(`هل تشترك ${M(a)} و ${M(b)} في رأس (نقطة)؟`,share?"نعم":"لا",[share?"لا":"نعم"],"انظري إلى حروف القطعتين: هل يتكرر حرف؟")];
+     if(!share) steps.push(S(`هل ${M(a)} و ${M(b)} في الاتجاه نفسه (يقعان في وجه واحد ولا يلتقيان)؟`,want==="متوازيان"?"نعم":"لا",[want==="متوازيان"?"لا":"نعم"],"تتبّعي القطعتين على المجسّم: هل هما ضلعان متقابلان في أحد الأوجه؟"));
+     steps.push(S(`إذن ما العلاقة بين ${M(a)} و ${M(b)}؟`,want,["متقاطعان","متوازيان","متخالفان"],"متقاطعان: يشتركان في نقطة. متوازيان: في مستوى واحد دون التقاء. متخالفان: غير ذلك."));
+     return Object.assign({q:`استعملي المجسّم: ما العلاقة بين ${M(a)} و ${M(b)}؟`,fig:figBox([a,b]),hint:"ابدئي بالسؤال: هل يشتركان في رأس؟ ثم: هل يقعان في وجه واحد؟",
+       sol:`${M(a)} و ${M(b)} ${want}.`,steps},mk(want,["متقاطعان","متوازيان","متخالفان"]));}
+   if(t===1){ const a=pick(EDGES); const sk=EDGES.filter(e=>rel(a,e)==="متخالفان"),pa=EDGES.filter(e=>e!==a&&rel(a,e)==="متوازيان"),it=EDGES.filter(e=>rel(a,e)==="متقاطعان");
+     const c=pick(sk),w=[pick(pa),...shuf(it).slice(0,2)];
+     const steps=[S("أي وصف يطابق القطعتين المتخالفتين؟","لا تتقاطعان ولا تقعان في مستوى واحد",["لا تتقاطعان وتقعان في مستوى واحد","تتقاطعان في نقطة واحدة","تقعان في الوجه نفسه"],"تذكّري تعريف التخالف."),
+       S(`أي القطع الآتية <b>تقاطع</b> ${M(a)} (تشترك معها في رأس) فنستبعدها؟`,M(w[1]),[M(c),M(w[0])],"ابحثي عن قطعة تحوي أحد الحرفين "+a[0]+" أو "+a[1]+"."),
+       S(`أي القطع الآتية <b>توازي</b> ${M(a)} فنستبعدها أيضًا؟`,M(w[0]),[M(c),M(w[2])],"الموازية لها الاتجاه نفسه وتقع معها في وجه واحد."),
+       S(`إذن أي القطع تخالف ${M(a)}؟`,M(c),w.map(M),"القطعة الباقية لا تقاطع ولا توازي.")];
+     return Object.assign({q:`أي القطع المستقيمة الآتية تخالف ${M(a)}؟`,fig:figBox([a]),hint:"استبعدي ما يقاطعها وما يوازيها.",sol:`${M(c)} لا تشترك مع ${M(a)} في رأس ولا توازيها، فهي مخالفة لها.`,steps},mk(M(c),w.map(M)));}
+   const pairs=[["ABCD","EFGH"],["ABFE","DCGH"],["ADHE","BCGF"]]; const pp=shuf(pick(pairs)); const others=["ABCD","EFGH","ABFE","DCGH","ADHE","BCGF"].filter(f=>!pp.includes(f));
+   const steps=[S("كم نقطة يشترك فيها مستويان متوازيان؟","لا يشتركان في أي نقطة",["نقطة واحدة","مستقيم كامل","رأسان"],"المستويات المتوازية لا تتقاطع أبدًا."),
+     S(`أي المستويات الآتية <b>لا</b> يحوي أيًّا من رؤوس ${M(pp[0])}؟`,M(pp[1]),shuf(others).slice(0,3).map(M),"افحصي حروف كل مستوى.")];
+   return Object.assign({q:`أي المستويات الآتية يوازي المستوى ${M(pp[0])}؟`,fig:figBox([...pp[0]].map((c,i,a)=>c+a[(i+1)%4])),hint:"المستوى الموازي هو الوجه المقابل الذي لا يشترك معه في أي رأس.",
+     sol:`${M(pp[1])} هو الوجه المقابل ولا يشترك مع ${M(pp[0])} في أي رأس.`,steps},mk(M(pp[1]),shuf(others).map(M)));}},
+{name:"تصنيف أزواج الزوايا الناتجة عن قاطع",
+ rule:"<b>الداخلية</b> بين المستقيمين و<b>الخارجية</b> خارجهما. <b>متناظرتان</b>: الموقع نفسه عند نقطتي التقاطع. <b>متبادلتان</b>: في جهتين مختلفتين من القاطع (داخليًا أو خارجيًا). <b>متحالفتان</b>: داخليتان في جهة واحدة من القاطع.",
+ gen(){ const rel=pick(MAIN4),[i,j]=pairOf(rel);
+   const side=left(i)===left(j)?"في جهة واحدة من القاطع":"في جهتين مختلفتين من القاطع";
+   const steps=[S(`هل الزاوية ${M("∠"+i)} داخلية (بين ℓ و m) أم خارجية؟`,pos(i),[pos(i)==="داخلية"?"خارجية":"داخلية"],"الداخلية تقع في المنطقة بين المستقيمين الأفقيين."),
+     S(`وهل الزاوية ${M("∠"+j)} داخلية أم خارجية؟`,pos(j),[pos(j)==="داخلية"?"خارجية":"داخلية"],"انظري أين يقع الرقم بالنسبة للمستقيمين."),
+     S("هل الزاويتان في جهة واحدة من القاطع t أم في جهتين مختلفتين؟",side,[side.includes("واحدة")?"في جهتين مختلفتين من القاطع":"في جهة واحدة من القاطع"],"القاطع t هو المستقيم المائل؛ هل الرقمان على يمينه معًا أو يساره معًا؟"),
+     S(`إذن ${M("∠"+i)} و ${M("∠"+j)}:`,rel,MAIN4,"داخلية+داخلية+جهتان ← متبادلتان داخليًا؛ داخلية+داخلية+جهة واحدة ← متحالفتان؛ خارجية+خارجية+جهتان ← متبادلتان خارجيًا؛ الموقع نفسه ← متناظرتان.")];
+   return Object.assign({q:`حدّدي الاسم الخاص لزوج الزوايا ${M("∠"+i)} و ${M("∠"+j)}:`,fig:figT([i,j]),hint:"حدّدي أولًا: داخلية أم خارجية؟ ثم: جهة واحدة من القاطع أم جهتان؟",
+     sol:`${M("∠"+i)} ${pos(i)} و ${M("∠"+j)} ${pos(j)}، و${side.replace("في ","تقعان في ")}، فهما ${rel}.`,steps},mk(rel,MAIN4));}},
+{name:"إيجاد قياس زاوية باستعمال علاقات التوازي",
+ rule:"إذا كان ℓ ∥ m: المتناظرتان والمتبادلتان (داخليًا وخارجيًا) والمتقابلتان بالرأس <b>متطابقة</b>، والمتحالفتان والمتجاورتان على مستقيم <b>متكاملتان</b> (مجموعهما 180°).",
+ gen(){ let i,j; do{i=R(1,8);j=R(1,8)}while(i===j); const v=R(4,16)*5; const rel=relName(i,j); const eq=congr(i,j); const ans=eq?v:180-v;
+   const RN=["متناظرتان","متبادلتان داخليًا","متبادلتان خارجيًا","متحالفتان","متقابلتان بالرأس","متجاورتان على مستقيم","متحالفتان خارجيًا"];
+   const steps=[S(`ما العلاقة بين ${M("∠"+i)} و ${M("∠"+j)}؟`,rel,shuf(RN.filter(x=>x!==rel)),"حدّدي: هل هما عند نقطة التقاطع نفسها؟ داخلية أم خارجية؟ في أي جهة من t؟"),
+     S("إذن الزاويتان:",eq?"متطابقتان (متساويتان)":"متكاملتان (مجموعهما 180°)",[eq?"متكاملتان (مجموعهما 180°)":"متطابقتان (متساويتان)"],"المتحالفتان والمتجاورتان على مستقيم فقط متكاملتان."),
+     S(`احسبي ${M("m∠"+j)}:`,M(ans+"°"),[M((eq?180-v:v)+"°"),M((90-v>0?90-v:v+10)+"°"),M((360-v)+"°")],eq?"الزاويتان متساويتان.":`اطرحي من 180: ${M("180 − "+v)}`)];
+   return Object.assign({q:`إذا كان ${M("ℓ ∥ m")} و ${M("m∠"+i+" = "+v+"°")}، فإن ${M("m∠"+j)} تساوي:`,fig:figT([i,j]),hint:"حدّدي العلاقة بين الزاويتين، ثم قرّري: تطابق أم تكامل؟",
+     sol:`${M("∠"+i)} و ${M("∠"+j)} ${rel}، فهما ${eq?"متطابقتان":"متكاملتان"}؛ ${M("m∠"+j+" = "+(eq?v:"180 − "+v+" = "+ans)+"°")}.`,steps},
+     mk(M(ans+"°"),[M((eq?180-v:v)+"°"),M((360-v)+"°"),M(Math.abs(90-v)+5+"°")]));}},
+{name:"حل معادلات جبرية لقياسات الزوايا",
+ rule:"اكتبي معادلة من العلاقة: زاويتان متطابقتان ← <b>العبارة الأولى = العبارة الثانية</b>. زاويتان متكاملتان ← <b>العبارة الأولى + العبارة الثانية = 180</b>. ثم حلّي وعوّضي للتحقق.",
+ gen(){ const rel=pick(MAIN4),[i,j]=pairOf(rel); const eq=congr(i,j); const x=R(4,20); let p,q,r,s;
+   if(eq){ do{p=R(2,7);r=R(1,6)}while(p===r); const val=R(8,28)*5; q=val-p*x; s=val-r*x; }
+   else{ p=R(2,6);r=R(1,6); const v1=R(8,28)*5; q=v1-p*x; s=(180-v1)-r*x; }
+   const e1=expr(p,q),e2=expr(r,s);
+   const eqS=M(`${p===1?"":p}x ${q>=0?"+ "+q:"− "+(-q)} = ${r===1?"":r}x ${s>=0?"+ "+s:"− "+(-s)}`), supS=M(`${p===1?"":p}x ${q>=0?"+ "+q:"− "+(-q)} + ${r===1?"":r}x ${s>=0?"+ "+s:"− "+(-s)} = 180`);
+   const wx = eq? (180-q-s)/(p+r) : (s-q)/(p-r||1);
+   const fx=n=>Number.isInteger(n)?neg(n):neg(Math.round(n*10)/10);
+   const steps=[S(`${M("∠"+i)} و ${M("∠"+j)} ${rel}؛ إذن هما:`,eq?"متطابقتان":"متكاملتان",[eq?"متكاملتان":"متطابقتان"],"المتحالفتان فقط متكاملتان؛ المتناظرتان والمتبادلتان متطابقتان."),
+     S("اختاري المعادلة الصحيحة:",eq?eqS:supS,[eq?supS:eqS,M(`${p}x = ${r}x`)],"متطابقتان ← نساوي العبارتين؛ متكاملتان ← مجموعهما 180."),
+     S(`حلّي المعادلة: قيمة ${M("x")} =`,M(neg(x)),[M(fx(wx)),M(neg(x+2)),M(neg(-x))],eq?`اجمعي الحدود المتشابهة: ${M(`${p-r}x = ${s-q}`)}`:`اجمعي: ${M(`${p+r}x + ${q+s} = 180`)}`)];
+   return Object.assign({q:`إذا كان ${M("ℓ ∥ m")} و ${M("m∠"+i+" = ")}${e1} و ${M("m∠"+j+" = ")}${e2}، فإن قيمة ${M("x")} تساوي:`,fig:figT([i,j]),
+     hint:"حدّدي العلاقة بين الزاويتين لتعرفي: هل نساوي العبارتين أم نجعل مجموعهما 180؟",
+     sol:`الزاويتان ${rel} (${eq?"متطابقتان":"متكاملتان"})، فالمعادلة ${eq?eqS:supS}، ومنها ${M("x = "+neg(x))}.`,steps},mk(M(neg(x)),[M(fx(wx)),M(neg(x+2)),M(neg(-x)),M(neg(x-3))]));}},
+{name:"إثبات توازي مستقيمين (المسلّمات والنظريات)",
+ rule:"لإثبات ℓ ∥ m نستعمل <b>العكس</b>: إذا تطابقت زاويتان متناظرتان ← عكس مسلّمة المتناظرتين. متبادلتان داخليًا متطابقتان ← عكس نظرية المتبادلتين داخليًا. متبادلتان خارجيًا ← عكس نظرية المتبادلتين خارجيًا. متحالفتان متكاملتان ← عكس نظرية المتحالفتين.",
+ gen(){ const TH={"متناظرتان":"عكس مسلّمة الزاويتين المتناظرتين","متبادلتان داخليًا":"عكس نظرية الزاويتين المتبادلتين داخليًا","متبادلتان خارجيًا":"عكس نظرية الزاويتين المتبادلتين خارجيًا","متحالفتان":"عكس نظرية الزاويتين المتحالفتين"};
+   const ALL=Object.values(TH);
+   if(Math.random()<.65){ const rel=pick(MAIN4),[i,j]=pairOf(rel); const cond=rel==="متحالفتان"?`${M("∠"+i)} و ${M("∠"+j)} متكاملتان`:M(`∠${i} ≅ ∠${j}`);
+     const steps=[S(`ما اسم زوج الزوايا ${M("∠"+i)} و ${M("∠"+j)}؟`,rel,MAIN4,"داخلية أم خارجية؟ جهة واحدة من القاطع أم جهتان؟"),
+       S("أي مسلّمة أو نظرية تُستعمل؟",TH[rel],ALL,"اختاري العكس المرتبط باسم الزوج الذي حدّدتِه.")];
+     return Object.assign({q:`إذا كانت ${cond}، فأي مسلّمة أو نظرية تبرّر أن ${M("ℓ ∥ m")}؟`,fig:figT([i,j]),hint:"سمّي زوج الزوايا أولًا.",sol:`الزاويتان ${rel}، إذن نستعمل ${TH[rel]}.`,steps},mk(TH[rel],ALL));}
+   const rel=pick(MAIN4),[i,j]=pairOf(rel); const ws=[]; for(const r2 of MAIN4) if(r2!==rel){const pr=pairOf(r2);ws.push(M(`∠${pr[0]} و ∠${pr[1]}`))}
+   const steps=[S(`نظرية ${rel==="متحالفتان"?"المتحالفتين":rel==="متناظرتان"?"المتناظرتين":rel==="متبادلتان داخليًا"?"المتبادلتين داخليًا":"المتبادلتين خارجيًا"} تتحدث عن زاويتين:`,rel,MAIN4,"اسم النظرية يحدد نوع الزوج."),
+     S("أي زوج من النوع المطلوب؟",M(`∠${i} و ∠${j}`),ws,"حدّدي موقع كل زاوية: داخلية/خارجية وجهة القاطع.")];
+   const nm={"متناظرتان":"مسلّمة الزاويتين المتناظرتين","متبادلتان داخليًا":"نظرية الزاويتين المتبادلتين داخليًا","متبادلتان خارجيًا":"نظرية الزاويتين المتبادلتين خارجيًا","متحالفتان":"نظرية الزاويتين المتحالفتين"}[rel];
+   return Object.assign({q:`إذا كان ${M("ℓ ∥ m")}، فوفق ${nm} أي زاويتين ${rel==="متحالفتان"?"يجب أن تكونا متكاملتين":"يجب أن تكونا متطابقتين"}؟`,fig:figT(),hint:"ابحثي عن زوج من النوع المذكور في اسم النظرية.",sol:`${M("∠"+i)} و ${M("∠"+j)} ${rel}.`,steps},mk(M(`∠${i} و ∠${j}`),ws));}},
+{name:"حساب ميل المستقيم المار بنقطتين",
+ rule:`الميل ${M("m = ")}<span class="m"><span class="fc"><span>y₂ − y₁</span><span>x₂ − x₁</span></span></span> — احرصي على ترتيب الطرح نفسه في البسط والمقام، وانتبهي للإشارات السالبة.`,
+ gen(){ let x1,y1,x2,y2; do{x1=R(-9,9);y1=R(-12,12);x2=R(-9,9);y2=R(-12,12)}while(x1===x2||y1===y2||Math.abs(x2-x1)<2);
+   const dy=y2-y1,dx=x2-x1; const c=F(dy,dx);
+   const wr=[F(-dy,dx),F(dx,dy),F(-dx,dy),F(y2+y1,dx),F(dy,x2+x1||1),F(dy+1,dx),F(dy,dx+1)];
+   const pA=M(`A(${neg(x1)}, ${neg(y1)})`),pB=M(`B(${neg(x2)}, ${neg(y2)})`);
+   const steps=[S(`احسبي الفرق في الإحداثي y: ${M("y₂ − y₁")} =`,M(neg(dy)),[M(neg(-dy)),M(neg(y2+y1)),M(neg(dx))],`${M(`${neg(y2)} − (${neg(y1)})`)}`),
+     S(`احسبي الفرق في الإحداثي x بالترتيب نفسه: ${M("x₂ − x₁")} =`,M(neg(dx)),[M(neg(-dx)),M(neg(x2+x1)),M(neg(dy))],`${M(`${neg(x2)} − (${neg(x1)})`)}`),
+     S(`إذن الميل ${M("m")} = ${M(neg(dy)+" ÷ "+neg(dx))} =`,c,wr,"بسّطي الكسر، وتذكّري: سالب ÷ موجب = سالب، وسالب ÷ سالب = موجب.")];
+   return Object.assign({q:`أوجدي ميل المستقيم المار بالنقطتين ${pA} و ${pB}:`,hint:"الميل = فرق y ÷ فرق x بالترتيب نفسه.",sol:`${M("m = ")}${F(dy,1)}÷${F(dx,1)} = ${c}`,steps},mk(c,wr));}},
+{name:"ميل المستقيمات المتوازية والمتعامدة",
+ rule:"المستقيمان <b>المتوازيان</b> لهما الميل نفسه. المستقيمان <b>المتعامدان</b> حاصل ضرب ميليهما = −1، أي أن ميل العمودي هو <b>مقلوب الميل مع عكس الإشارة</b>.",
+ gen(){ const t=R(0,1);
+   if(t===0){ let n,d; do{n=R(-6,6);d=R(1,5)}while(n===0||gcd(n,d)!==1); const perp=Math.random()<.5; const c=perp?F(-d,n):F(n,d);
+     const wr=perp?[F(n,d),F(d,n),F(-n,d),F(-n,-d*2)]:[F(-d,n),F(d,n),F(-n,d),F(n+1,d)];
+     const steps=[S("المستقيمان "+(perp?"المتعامدان":"المتوازيان")+":",perp?"حاصل ضرب ميليهما −1":"ميلاهما متساويان",[perp?"ميلاهما متساويان":"حاصل ضرب ميليهما −1","مجموع ميليهما صفر"],"راجعي القاعدة في الأعلى."),
+       S("إذن الميل المطلوب:",c,wr,perp?"اقلبي الكسر ثم غيّري الإشارة.":"هو الميل نفسه.")];
+     return Object.assign({q:`ميل المستقيم ℓ يساوي ${F(n,d)}. ما ميل المستقيم ${perp?"العمودي على":"الموازي لـ"} ℓ؟`,hint:perp?"مقلوب الميل مع عكس الإشارة.":"الميل نفسه.",sol:`الميل المطلوب ${c}.`,steps},mk(c,wr));}
+   let a,b; do{a=R(1,4);b=R(-4,4)}while(b===0||gcd(a,b)!==1); const A=[R(-5,3),R(-5,3)],B=[A[0]+a,A[1]+b],C=[R(-7,4),R(-4,6)];
+   const perp=Math.random()<.5; const k=pick([1,2]); const v=perp?[-b*k,a*k]:[a*k,b*k]; const D=[C[0]+v[0],C[1]+v[1]];
+   const pt=p=>M(`(${neg(p[0])}, ${neg(p[1])})`);
+   const alt=[perp?[C[0]+a*k,C[1]+b*k]:[C[0]-b*k,C[1]+a*k],[C[0]+v[1],C[1]+v[0]],[C[0]-v[0],C[1]+v[1]],[C[0]+v[0],C[1]-v[1]],[C[0]+v[0]+1,C[1]+v[1]],[C[0]-v[1],C[1]-v[0]]].map(p=>M(`D(${neg(p[0])}, ${neg(p[1])})`));
+   const cD=M(`D(${neg(D[0])}, ${neg(D[1])})`); const mAB=F(b,a), need=perp?F(-a,b):F(b,a);
+   const steps=[S(`احسبي ميل ${M("AB")}:`,mAB,[F(a,b),F(-b,a),F(-a,b)],"فرق y ÷ فرق x."),
+     S(`ما الميل الذي يجب أن يكون لـ ${M("CD")}؟`,need,[perp?mAB:F(-a,b),F(a,b),F(-b,a)],perp?"مقلوب ميل AB مع عكس الإشارة.":"ميل AB نفسه."),
+     S(`احسبي ميل ${M("CD")} لكل خيار؛ أي نقطة تعطي الميل ${need}؟`,cD,alt,`ميل CD = (y − ${neg(C[1])}) ÷ (x − ${neg(C[0])})`)];
+   return Object.assign({q:`إذا كانت ${M("A")}${pt(A)} و ${M("B")}${pt(B)} و ${M("C")}${pt(C)}، فما إحداثيات ${M("D")} التي تجعل ${M("CD")} ${perp?"عموديًا على":"موازيًا لـ"} ${M("AB")}؟`,
+     hint:"احسبي ميل AB، ثم اختبري ميل CD لكل خيار.",sol:`ميل AB = ${mAB}، والمطلوب ميل CD = ${need}، ويتحقق ذلك عند ${cD}.`,steps},mk(cD,alt));}},
+{name:"كتابة معادلة المستقيم بصيغها المختلفة",
+ rule:`<b>صيغة الميل ونقطة</b>: ${M("y − y₁ = m(x − x₁)")}. <b>صيغة الميل والمقطع</b>: ${M("y = mx + b")} حيث b مقطع المحور y. مقطع المحور x يساوي a يعني أن المستقيم يمر بالنقطة ${M("(a, 0)")}.`,
+ gen(){ const t=R(0,2);
+   if(t===0){ let n,d; do{n=R(-5,5);d=pick([1,1,2,3])}while(n===0||gcd(n,d)!==1); let x1,y1; do{x1=R(-7,7);y1=R(-8,8)}while(x1===0||y1===0);
+     const c=ptSlope(n,d,x1,y1); const wr=[ptSlope(n,d,-x1,-y1),ptSlope(n,d,-x1,y1),ptSlope(n,d,x1,-y1),ptSlope(-n,d,x1,y1)];
+     const steps=[S("ما الميل m؟",F(n,d),[F(-n,d),F(d,n)],"معطى في السؤال."),
+       S(`ما ${M("x₁")} و ${M("y₁")}؟`,M(`x₁ = ${neg(x1)} , y₁ = ${neg(y1)}`),[M(`x₁ = ${neg(y1)} , y₁ = ${neg(x1)}`),M(`x₁ = ${neg(-x1)} , y₁ = ${neg(-y1)}`)],"النقطة تُكتب (x, y)."),
+       S(`عوّضي في ${M("y − y₁ = m(x − x₁)")}:`,c,wr,"طرح عدد سالب = جمع: x − (−4) = x + 4.")];
+     return Object.assign({q:`ما معادلة المستقيم الذي ميله ${F(n,d)} ويمر بالنقطة ${M(`(${neg(x1)}, ${neg(y1)})`)}؟`,hint:"استعملي صيغة الميل ونقطة، وانتبهي للإشارات.",sol:`بالتعويض: ${c}`,steps},mk(c,wr));}
+   if(t===1){ const a=pick([1,2,3,4,-1,-2,-3]),m=pick([1,2,3,4,-2,-3]),b=-m*a; if(b===0) return SK[8].gen();
+     const c=lin(m,1,b); const wr=[lin(a,1,b),lin(-m,1,b),lin(m,1,a),lin(b,1,a),lin(-m,1,-b),lin(m,1,-b)];
+     const steps=[S(`مقطع المحور x يساوي ${neg(a)} يعني أن المستقيم يمر بالنقطة:`,M(`(${neg(a)}, 0)`),[M(`(0, ${neg(a)})`),M(`(${neg(a)}, ${neg(a)})`)],"على المحور x يكون y = 0."),
+       S(`ومقطع المحور y يساوي ${neg(b)} يعني النقطة:`,M(`(0, ${neg(b)})`),[M(`(${neg(b)}, 0)`)],"على المحور y يكون x = 0."),
+       S("احسبي الميل بين النقطتين:",M(neg(m)),[M(neg(-m)),M(neg(a)),F(1,m)],`${M(`(${neg(b)} − 0) ÷ (0 − ${neg(a)})`)}`),
+       S(`إذن المعادلة ${M("y = mx + b")}:`,c,wr,"m هو الميل، وb مقطع المحور y.")];
+     return Object.assign({q:`ما معادلة المستقيم الذي مقطع المحور x له يساوي ${M(neg(a))}، ومقطع المحور y له يساوي ${M(neg(b))}؟`,hint:"حوّلي المقطعين إلى نقطتين ثم احسبي الميل.",sol:`النقطتان (${neg(a)}, 0) و(0, ${neg(b)})، والميل ${neg(m)}، فالمعادلة ${c}`,steps},mk(c,wr));}
+   const m=pick([1,2,3,4,-1,-2,-3]),b=R(-9,9),x1=R(-4,2),x2=x1+R(2,5),y1=m*x1+b,y2=m*x2+b;
+   const c=lin(m,1,b),wr=[lin(m,1,-b),lin(-m,1,b),lin(m,1,b+m),lin(1,m,b),lin(m+1,1,b),lin(-m,1,-b)];
+   const steps=[S("احسبي الميل:",M(neg(m)),[M(neg(-m)),F(1,m),M(neg(m+1))],`(${neg(y2)} − ${neg(y1)}) ÷ (${neg(x2)} − ${neg(x1)})`),
+     S(`عوّضي النقطة ${M(`(${neg(x1)}, ${neg(y1)})`)} في ${M(`y = ${neg(m)}x + b`)}؛ قيمة b =`,M(neg(b)),[M(neg(-b)),M(neg(y1)),M(neg(b+m))],`${M(`${neg(y1)} = ${neg(m)}·(${neg(x1)}) + b`)}`),
+     S("إذن المعادلة:",c,wr,"ضعي الميل وb في y = mx + b.")];
+   return Object.assign({q:`ما معادلة المستقيم الذي يمر بالنقطتين ${M(`(${neg(x1)}, ${neg(y1)})`)} و ${M(`(${neg(x2)}, ${neg(y2)})`)}؟`,hint:"احسبي الميل أولًا ثم أوجدي b.",sol:`الميل ${neg(m)} وb = ${neg(b)}: ${c}`,steps},mk(c,wr));}},
+{name:"النمذجة بمعادلة خطية من موقف حياتي",
+ rule:"في الموقف الحياتي: <b>المعدّل</b> (الذي يتكرر مع كل وحدة) هو معامل المتغير، و<b>المقدار الثابت</b> (يُدفع أو يُضاف مرة واحدة) هو الحد الثابت: الكلي = المعدّل × المتغير + الثابت.",
+ gen(){ const T=[
+   (r,f)=>[`تدفع ريم رسم دخول ثابتًا ${f} ريالًا لمدينة ألعاب، و${r} ريالات عن كل لعبة g. أي معادلة تمثل التكلفة الكلية C؟`,"C","g"],
+   (r,f)=>[`ينال خالد ${r} درجات عن كل سؤال من q من الأسئلة، و${f} درجات عن سؤال إضافي واحد. أي معادلة تمثل المجموع الكلي T؟`,"T","q"],
+   (r,f)=>[`في خزان ${f} لترًا من الماء، ويُضاف إليه ${r} لترات كل دقيقة t. أي معادلة تمثل كمية الماء W؟`,"W","t"],
+   (r,f)=>[`باقة إنترنت رسومها الشهرية ${f} ريالًا، وكل جيجابايت إضافي n بـ ${r} ريالات. أي معادلة تمثل المبلغ الكلي P؟`,"P","n"],
+   (r,f)=>[`تقطع سيارة ${r} كيلومترًا في كل ساعة h، وقد قطعت قبل البدء ${f} كيلومترًا. أي معادلة تمثل المسافة الكلية D؟`,"D","h"]];
+   let r=R(2,9),f=R(5,40); if(r===f)f+=3; const [txt,Y,X]=pick(T)(r,f);
+   const c=M(`${Y} = ${r}${X} + ${f}`),wr=[M(`${Y} = ${f}${X} + ${r}`),M(`${Y} = ${r}(${X} + ${f})`),M(`${Y} + ${f} = ${r}${X}`),M(`${r}${Y} = ${X} + ${f}`)];
+   const steps=[S(`ما المقدار الذي يتكرر مع كل وحدة من ${M(X)} (المعدّل)؟`,M(""+r),[M(""+f),M(""+(r+f)),M(""+Math.abs(f-r))],"ابحثي عن عبارة «لكل» أو «عن كل»."),
+     S("ما المقدار الثابت الذي يُضاف مرة واحدة؟",M(""+f),[M(""+r),M("0")],"لا يتغير بتغير "+X+"."),
+     S("إذن المعادلة (الكلي = المعدّل × المتغير + الثابت):",c,wr,"المعدّل يُضرب في المتغير فقط.")];
+   return Object.assign({q:txt,hint:"حدّدي المعدّل (يُضرب في المتغير) والمقدار الثابت.",sol:`المعدّل ${r} يُضرب في ${X}، والثابت ${f}: ${c}`,steps},mk(c,wr));}},
+{name:"البعد بين نقطة ومستقيم وبين مستقيمين متوازيين",
+ rule:`البعد بين النقطة ${M("(x₁, y₁)")} والمستقيم ${M("ax + by + c = 0")} هو ${M("|ax₁ + by₁ + c| ÷ √(a² + b²)")}. والبعد بين المستقيمين المتوازيين ${M("y = mx + b₁")} و ${M("y = mx + b₂")} هو ${M("|b₂ − b₁| ÷ √(m² + 1)")}.`,
+ gen(){ const t=R(0,1);
+   if(t===0){ const [a,b,n]=pick([[3,4,5],[4,3,5],[5,12,13],[12,5,13],[6,8,10],[8,6,10],[3,-4,5],[4,-3,5]]); const x0=R(-4,4),y0=R(-4,4),d=R(1,5),sg=pick([1,-1]);
+     const c=sg*d*n-a*x0-b*y0; const num=Math.abs(a*x0+b*y0+c);
+     const L=M(`${a}x ${b>=0?"+ "+b:"− "+(-b)}y ${c>=0?"+ "+c:"− "+(-c)} = 0`);
+     const steps=[S(`عوّضي النقطة في ${M("|ax₁ + by₁ + c|")}:`,M(""+num),[M(""+Math.abs(a*x0+b*y0-c)),M(""+Math.abs(a*x0+b*y0)),M(""+(num+n))],`${M(`|${a}·(${neg(x0)}) + ${b}·(${neg(y0)}) + (${neg(c)})|`)}`),
+       S(`احسبي ${M("√(a² + b²)")}:`,M(""+n),[M(""+(Math.abs(a)+Math.abs(b))),M(""+(a*a+b*b))],`${M(`√(${a*a} + ${b*b})`)}`),
+       S("إذن البعد:",M(""+d),[M(""+num),M(""+(d+1)),M(""+n)],`${M(num+" ÷ "+n)}`)];
+     return Object.assign({q:`ما البعد بين النقطة ${M(`(${neg(x0)}, ${neg(y0)})`)} والمستقيم ${L}؟`,hint:"عوّضي في قانون البعد بين نقطة ومستقيم.",sol:`البعد = ${M(`${num} ÷ ${n} = ${d}`)}`,steps},mk(M(""+d),[M(""+num),M(""+(d+1)),M(""+n),M(""+(d+2)),M(""+(d+3))]));}
+   const m=pick([1,2,3]),N=m*m+1,k=R(1,4),db=k*N,b1=R(-9,6),b2=b1+db*pick([1,-1]);
+   const rad=v=>v===1?`√${N}`:`${v}√${N}`; const c=M(rad(k));
+   const steps=[S(`احسبي ${M("|b₂ − b₁|")}:`,M(""+db),[M(""+Math.abs(b1+b2)),M(""+(db+1))],`${M(`|${neg(b2)} − (${neg(b1)})|`)}`),
+     S(`احسبي ${M("√(m² + 1)")}:`,M(`√${N}`),[M(`√${m+1}`),M(""+(m+1))],`${M(`m = ${m}`)} ← ${M(`√(${m*m} + 1)`)}`),
+     S(`إذن البعد = ${M(db+" ÷ √"+N)} =`,c,[M(""+db),M(`√${db}`),M(rad(k+1))],`اضربي البسط والمقام في ${M("√"+N)}: ${M(db+"√"+N+" ÷ "+N)}`)];
+   return Object.assign({q:`ما البعد بين المستقيمين المتوازيين ${lin(m,1,b1)} و ${lin(m,1,b2)}؟`,hint:"استعملي |b₂ − b₁| ÷ √(m² + 1).",sol:`البعد = ${M(`${db} ÷ √${N} = ${rad(k)}`)}`,steps},mk(c,[M(""+db),M(`√${db}`),M(rad(k+1)),M(`√${N}`),M(rad(k+2))]));}}
+];
+
+/* ---------- enrichment (one challenge per skill) ---------- */
+const EN=[null,
+ {q:`في المجسّم، كم قطعة مستقيمة من أحرفه تخالف ${M("AE")}؟`,fig:()=>figBox(["AE"]),opts:["2","3","4","6"],ci:2,hint:"استبعدي الأحرف التي تقاطع AE (تحوي A أو E) والتي توازيها (الرأسية).",sol:"الأحرف المخالفة: BC، CD، FG، GH ← 4 أحرف."},
+ {q:`ℓ ∥ m يقطعهما القاطع t. كم زاوية من الزوايا الثماني تطابق ${M("∠1")} (بما فيها ${M("∠1")} نفسها)؟`,fig:()=>figT([1]),opts:["2","3","4","8"],ci:2,hint:"فكّري في المتقابلة بالرأس والمتناظرة والمتبادلة خارجيًا.",sol:"∠1 و∠3 (بالرأس) و∠5 (مناظرة) و∠7 (متبادلة خارجيًا لـ ∠1) ← 4 زوايا."},
+ {q:`ℓ ∥ m، و ${M("m∠2 = 3·m∠1")}. ما ${M("m∠6")}؟`,fig:()=>figT([1,2,6]),opts:[M("45°"),M("135°"),M("60°"),M("120°")],ci:1,hint:"∠1 و∠2 متجاورتان على مستقيم: مجموعهما 180°.",sol:`${M("x + 3x = 180 ⇐ x = 45")}، إذن m∠2 = 135°، و∠6 تناظر ∠2 ← 135°.`},
+ {q:`ℓ ∥ m، و ${M("m∠3 = (5x − 12)°")} و ${M("m∠6 = (3x + 24)°")}. ما ${M("m∠3")}؟`,fig:()=>figT([3,6]),opts:[M("93°"),M("87°"),M("21°"),M("105°")],ci:0,hint:"∠3 و∠6 متحالفتان، فما العلاقة بينهما؟",sol:`${M("5x − 12 + 3x + 24 = 180 ⇐ 8x = 168 ⇐ x = 21")}، إذن ${M("m∠3 = 5(21) − 12 = 93°")}.`},
+ {q:`${M("m∠1 = (2x + 10)°")} و ${M("m∠7 = (3x − 20)°")}. ما قيمة x التي تجعل ${M("ℓ ∥ m")}؟ وما النظرية المستعملة؟`,fig:()=>figT([1,7]),opts:["x = 30 ، عكس نظرية المتبادلتين خارجيًا","x = 30 ، عكس مسلّمة المتناظرتين","x = 38 ، عكس نظرية المتحالفتين","x = 10 ، عكس نظرية المتبادلتين داخليًا"],ci:0,hint:"∠1 و∠7 خارجيتان في جهتين مختلفتين من القاطع.",sol:`متبادلتان خارجيًا ← نساويهما: ${M("2x + 10 = 3x − 20 ⇐ x = 30")}.`},
+ {q:`ما قيمة k التي تجعل ميل المستقيم المار بالنقطتين ${M("(k, 4)")} و ${M("(6, 10)")} يساوي 3؟`,opts:[M("4"),M("8"),M("2"),M("−4")],ci:0,hint:"اكتبي معادلة الميل: (10 − 4) ÷ (6 − k) = 3.",sol:`${M("6 ÷ (6 − k) = 3 ⇐ 6 − k = 2 ⇐ k = 4")}`},
+ {q:`ما قيمة k التي تجعل المستقيم ${M("y = (k − 1)x + 3")} عموديًا على المستقيم ${lin(-1,2,5)}؟`,opts:[M("3"),M("−1"),M("1.5"),M("2")],ci:0,hint:"ميل العمودي على −½ هو 2.",sol:`${M("k − 1 = 2 ⇐ k = 3")}`},
+ {q:`ما معادلة المستقيم العمودي على ${lin(2,1,-1)} والمار بالنقطة ${M("(4, 1)")}؟`,opts:[lin(-1,2,3),lin(2,1,-7),lin(-1,2,-1),lin(1,2,-1)],ci:0,hint:"الميل العمودي −½، ثم صيغة الميل ونقطة.",sol:`${ptSlope(-1,2,4,1)} ⇐ ${lin(-1,2,3)}`},
+ {q:"اشتركت سارة في نادٍ برسوم تسجيل ثابتة وأجرة شهرية ثابتة. بعد 3 أشهر كان مجموع ما دفعته 260 ريالًا، وبعد 7 أشهر 460 ريالًا. ما رسوم التسجيل؟",opts:[M("110"),M("50"),M("150"),M("60")],ci:0,hint:"الفرق بين المبلغين يعود إلى 4 أشهر فقط.",sol:"الأجرة الشهرية = (460 − 260) ÷ 4 = 50، ورسوم التسجيل = 260 − 3×50 = 110 ريالًا."},
+ {q:`البعد بين المستقيمين المتوازيين ${M("3x + 4y = 10")} و ${M("3x + 4y = k")} يساوي 3. ما قيم k الممكنة؟`,opts:["25 أو −5","13 أو 7","25 فقط","15 أو 5"],ci:0,hint:"البعد = |k − 10| ÷ √(3² + 4²).",sol:`${M("|k − 10| ÷ 5 = 3 ⇐ |k − 10| = 15")} ⇐ k = 25 أو k = −5.`}
+];
+
+/* ---------- saving ---------- */
+const QUIZ=(MODE==="r"?"علاج: ":"إثراء: ")+"م"+SID+" "+SK[SID].name.split(" ").slice(0,4).join(" ");
+function payload(score,total,marks){return JSON.stringify({quiz:QUIZ,name:NAME,cls:CLS,score,total,secs:Math.round((Date.now()-T0)/1000),marks});}
+function save(score,total,marks){ if(saved) return; saved=true;
+  try{fetch(SAVE_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:payload(score,total,marks)})}catch(e){} }
+window.addEventListener("pagehide",()=>{ if(!saved&&NAME&&started&&MODE==="r"){ saved=true; try{navigator.sendBeacon(SAVE_URL,payload(0,1,["لم تتقن بعد",attempts]))}catch(e){} }});
+
+/* ---------- UI ---------- */
+const app=document.getElementById("app"); let started=false;
+document.getElementById("ttl").textContent=MODE==="r"?"خطة علاجية حتى الإتقان":"خطة إثرائية";
+document.getElementById("sk").textContent="المهارة "+SID+": "+SK[SID].name;
+function who(){document.getElementById("who").textContent=NAME?(NAME+(CLS?" · "+CLS:"")):"";}
+who();
+function el(h){const d=document.createElement("div");d.innerHTML=h;return d.firstElementChild;}
+
+function askQ(box,prob,onAnswer,{retry=false}={}){ // renders options
+  const o=box.querySelector(".opts"); const hb=box.querySelector(".hb"), hn=box.querySelector(".hint");
+  if(hb) hb.onclick=()=>{hn.style.display="block"};
+  prob.opts.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.innerHTML=t;o.appendChild(b);
+    b.onclick=()=>{ const ok=k===prob.ci;
+      if(ok){ b.classList.add("ok"); o.querySelectorAll("button").forEach(x=>x.disabled=true); onAnswer(true); }
+      else if(retry){ b.classList.add("no"); b.disabled=true; hn.style.display="block"; onAnswer(false); }
+      else { b.classList.add("no"); o.children[prob.ci].classList.add("ok"); o.querySelectorAll("button").forEach(x=>x.disabled=true); onAnswer(false); } };});
+}
+function qCard(title,prob){ return el(`<div class="card"><h2>${title}</h2>${prob.fig?`<div class="fig">${typeof prob.fig==="function"?prob.fig():prob.fig}</div>`:""}
+  <div class="q">${prob.q}</div><div class="opts"></div><button class="btn ghost hb">💡 تلميحة</button><div class="hint">${prob.hint}</div></div>`); }
+
+function start(){ started=true; app.innerHTML="";
+  app.appendChild(el(`<div class="card"><h2>تذكير بالقاعدة</h2><div class="rule">${SK[SID].rule}</div></div>`));
+  if(MODE==="e") return enrich();
+  mastery(); }
+
+function mastery(){ attempts++; const p=SK[SID].gen(); const c=qCard(attempts===1?"سؤال المهارة":"سؤال تحقّق جديد ("+attempts+")",p); app.appendChild(c); c.scrollIntoView({behavior:"smooth"});
+  askQ(c,p,ok=>{
+    if(ok){ c.appendChild(el(`<div class="fb ok">✔ إجابة صحيحة! ${p.sol}</div>`));
+      app.appendChild(el(`<div class="card"><div class="big">🌟 أحسنتِ يا ${NAME.split(" ")[0]||"بطلة"}! أتقنتِ المهارة</div><p style="text-align:center">${attempts===1?"من المحاولة الأولى":"بعد "+attempts+" محاولات"} — انتهى التدريب وحُفظت نتيجتكِ.</p></div>`));
+      save(1,1,["أتقنت",attempts]); }
+    else { c.appendChild(el(`<div class="fb no">✘ الإجابة غير صحيحة. الحل: ${p.sol}</div>`));
+      const b=el(`<button class="btn">ابدئي التدريب خطوة بخطوة ←</button>`); c.appendChild(b); b.onclick=()=>{b.remove();training();}; }
+  });}
+
+function training(){ const p=SK[SID].gen(); const c=el(`<div class="card"><h2>تدريب موجَّه: نحلّ معًا خطوة بخطوة</h2>${p.fig?`<div class="fig">${p.fig}</div>`:""}<div class="q">${p.q}</div><div class="steps"></div></div>`);
+  app.appendChild(c); c.scrollIntoView({behavior:"smooth"}); const box=c.querySelector(".steps"); let k=0;
+  (function next(){ if(k>=p.steps.length){ c.appendChild(el(`<div class="fb ok">✔ أنهيتِ خطوات الحل: ${p.sol}</div>`));
+       const b=el(`<button class="btn">جرّبي سؤالًا بنفسكِ ←</button>`); c.appendChild(b); b.onclick=()=>{b.remove();mastery();}; return; }
+    const s=p.steps[k]; const sc=el(`<div class="step"><div class="n">الخطوة ${k+1} من ${p.steps.length}</div><div class="q">${s.q}</div><div class="opts"></div><button class="btn ghost hb">💡 تلميحة</button><div class="hint">${s.hint}</div></div>`);
+    box.appendChild(sc); askQ(sc,s,ok=>{ if(ok){ sc.classList.add("done"); sc.querySelector(".hb").remove(); k++; next(); } },{retry:true}); })();
+}
+
+function enrich(){ const e=EN[SID]; const c=qCard("تحدٍّ إثرائي",e); app.appendChild(c);
+  askQ(c,e,ok=>{ c.appendChild(el(`<div class="fb ${ok?"ok":"no"}">${ok?"✔ رائع! إجابة صحيحة.":"✘ ليست الإجابة الصحيحة."} <br>${e.sol}</div>`)); save(ok?1:0,1,[ok?"صحيحة":"خاطئة"]); });}
+
+if(NAME) start();
+else{ app.appendChild(el(`<div class="card"><h2>قبل البدء</h2><label>اسم الطالبة</label><input id="nm"><label>الفصل</label>
+  <select id="cl"><option>أولى ١</option><option>أولى ٢</option><option>أولى ٣</option></select><button class="btn" id="go">ابدئي</button></div>`));
+  document.getElementById("go").onclick=()=>{const v=document.getElementById("nm").value.trim(); if(!v) return; NAME=v; CLS=document.getElementById("cl").value; who(); start();}; }
+</script>
+</body>
+</html>
