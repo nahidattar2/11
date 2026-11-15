@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تقرير اختبار فصل التوازي والتعامد</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Geeza Pro","GeezaPro","Noto Naskh Arabic","Segoe UI",Tahoma,sans-serif;background:#f3f4f7;color:#1f2233;line-height:1.8;min-height:100vh}
+.top{background:linear-gradient(180deg,#4b33b5 0%,#7a68d6 100%);color:#fff;text-align:center;padding:30px 16px 46px}
+.top h1{font-size:24px}.top p{opacity:.92;font-size:15px}
+.wrap{max-width:460px;margin:-28px auto 30px;padding:0 14px}
+.card{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(30,30,60,.12);padding:22px 20px}
+label{display:block;font-weight:bold;font-size:16px;margin-bottom:8px}
+input{width:100%;font:inherit;font-size:22px;letter-spacing:3px;text-align:center;direction:ltr;padding:10px;border:2px solid #e1e3ea;border-radius:12px;outline:none}
+input:focus{border-color:#7a68d6}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;border:0;border-radius:14px;padding:12px;font:inherit;font-size:18px;font-weight:bold;color:#fff;cursor:pointer;text-decoration:none;
+ background:linear-gradient(180deg,#a596f0 0%,#6a55d4 40%,#4b33b5 calc(100% - 5px),#2f1f80 calc(100% - 5px));padding-bottom:16px}
+.btn:active{transform:translateY(3px);background:linear-gradient(180deg,#a596f0,#4b33b5)}
+.btn.g{background:linear-gradient(180deg,#5fd39a 0%,#1a9e5a 45%,#137a45 calc(100% - 5px),#0c5530 calc(100% - 5px))}
+.btn:disabled{opacity:.6}
+.msg{margin-top:14px;border-radius:12px;padding:10px 14px;font-size:15px;display:none}
+.msg.err{display:block;background:#fde8e8;color:#b42323}
+.msg.wait{display:block;background:#ece9fb;color:#4b33b5}
+.who{text-align:center;margin-bottom:6px}.who b{display:block;font-size:22px;color:#3d2a9c}.who span{color:#777b8f}
+.note{font-size:13px;color:#8a8ea0;text-align:center;margin-top:14px}
+.viewer{max-width:900px;margin:0 auto 30px;padding:0 14px;display:none}
+.viewer iframe{width:100%;height:80vh;border:0;border-radius:12px;background:#fff;box-shadow:0 2px 10px rgba(30,30,60,.12)}
+.foot{text-align:center;color:#8a8ea0;font-size:13px;padding:10px}
+</style>
+</head>
+<body>
+<div class="top"><h1>تقرير اختبار فصل التوازي والتعامد</h1><p>الصف الأول الثانوي · معلمة الرياضيات: ناهد علي عطار</p></div>
+<div class="wrap">
+ <div class="card" id="login">
+  <label for="id">اكتبي رقم هويتكِ</label>
+  <input id="id" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="١٠ أرقام">
+  <button class="btn" id="go">عرض تقريري</button>
+  <div class="msg" id="msg"></div>
+  <div class="note">رقم الهوية لا يُرسل ولا يُحفظ؛ يُستعمل على جهازكِ فقط لفتح تقريركِ.</div>
+ </div>
+ <div class="card" id="done" style="display:none">
+  <div class="who"><b id="nm"></b><span id="cl"></span></div>
+  <a class="btn" id="open" target="_blank">فتح التقرير</a>
+  <a class="btn g" id="dl">تنزيل التقرير (PDF)</a>
+  <button class="btn" id="back" style="background:#ece9fb;color:#4b33b5;padding-bottom:12px">رجوع</button>
+  <div class="note">في التقرير أزرار «خطة علاجية» و«خطة إثرائية» لكل مهارة — افتحيه واضغطي عليها.</div>
+ </div>
+</div>
+<div class="viewer" id="viewer"><iframe id="frame" title="التقرير"></iframe></div>
+<div class="foot">مدرسة الموهوبات التقنية الثانوية – مكة المكرمة</div>
+<script>
+const SALT="nahidattar2|parallel-1448|", IT=250000;
+const $=id=>document.getElementById(id);
+const toLatin=s=>s.replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/\D/g,"");
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+function show(t,c){const m=$("msg");m.className="msg "+c;m.textContent=t;}
+let url=null;
+async function go(){
+  const id=toLatin($("id").value);
+  if(id.length!==10){show("رقم الهوية يجب أن يكون ١٠ أرقام.","err");return;}
+  if(!window.crypto||!crypto.subtle){show("المتصفح لا يدعم فتح التقرير، جرّبي متصفحًا آخر.","err");return;}
+  $("go").disabled=true; show("جارٍ البحث عن تقريركِ…","wait");
+  try{
+    const enc=new TextEncoder();
+    const base=await crypto.subtle.importKey("raw",enc.encode(id),"PBKDF2",false,["deriveBits"]);
+    const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:enc.encode(SALT),iterations:IT},base,512);
+    const keyRaw=bits.slice(0,32), fid=hex(bits.slice(32,44));
+    const r=await fetch("reports/"+fid+".bin",{cache:"no-store"});
+    if(!r.ok) throw "nf";
+    const buf=await r.arrayBuffer();
+    const key=await crypto.subtle.importKey("raw",keyRaw,"AES-GCM",false,["decrypt"]);
+    const plain=new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:buf.slice(0,12)},key,buf.slice(12)));
+    const ml=new DataView(plain.buffer).getUint32(0);
+    const meta=JSON.parse(new TextDecoder().decode(plain.slice(4,4+ml)));
+    const pdf=new Blob([plain.slice(4+ml)],{type:"application/pdf"});
+    if(url) URL.revokeObjectURL(url); url=URL.createObjectURL(pdf);
+    $("nm").textContent=meta.name; $("cl").textContent="فصل "+meta.cls;
+    $("open").href=url; $("dl").href=url; $("dl").download=meta.name+" - تقرير اختبار التوازي والتعامد.pdf";
+    $("login").style.display="none"; $("done").style.display="block";
+    if(window.innerWidth>800){$("frame").src=url;$("viewer").style.display="block";}
+  }catch(e){ show(e==="nf"?"لا يوجد تقرير لهذا الرقم. تأكدي من رقم الهوية، أو راجعي المعلمة.":"تعذّر فتح التقرير، حاولي مرة أخرى.","err"); }
+  $("go").disabled=false;
+}
+$("go").onclick=go; $("id").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+$("back").onclick=()=>{$("done").style.display="none";$("login").style.display="block";$("viewer").style.display="none";$("id").value="";$("msg").className="msg";};
+</script>
+</body>
+</html>
