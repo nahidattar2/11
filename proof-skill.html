@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تدريب مهارات فصل التبرير والبرهان</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Geeza Pro","GeezaPro","Noto Naskh Arabic","Segoe UI",Tahoma,sans-serif;background:#f3f4f7;color:#1f2233;line-height:1.8}
+.top{background:linear-gradient(135deg,#4b33b5,#7a68d6);color:#fff;padding:22px 18px 26px;text-align:center}
+.top h1{font-size:22px}.top .sk{font-size:15px;opacity:.95;margin-top:4px}
+.top .who{display:inline-block;margin-top:10px;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 16px;font-size:14px}
+.wrap{max-width:760px;margin:-14px auto 40px;padding:0 14px}
+.card{background:#fff;border-radius:14px;box-shadow:0 1px 5px rgba(30,30,60,.12);padding:18px 18px;margin-bottom:14px}
+h2{font-size:17px;color:#3d2a9c;margin-bottom:8px}
+.rule{background:#f7f6fe;border:1px solid #e1def5;border-radius:10px;padding:10px 14px;font-size:15px}
+.q{font-size:17px;margin:6px 0 10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.opt{border:2px solid #e1e3ea;border-radius:10px;padding:10px 12px;background:#fff;cursor:pointer;font:inherit;font-size:16px;text-align:center;transition:.15s}
+.opt:hover{border-color:#7a68d6;background:#f7f6fe}
+.opt.ok{border-color:#1a9e5a;background:#e3f5eb}.opt.no{border-color:#d64545;background:#fde8e8}
+.opt:disabled{cursor:default}
+.btn{display:inline-block;border:0;border-radius:10px;padding:10px 20px;font:inherit;font-size:16px;font-weight:bold;cursor:pointer;background:#4b33b5;color:#fff;margin-top:12px}
+.btn.ghost{background:#ece9fb;color:#4b33b5}
+.hint{display:none;margin-top:10px;background:#fff8e6;border:1px solid #f3d58a;border-radius:10px;padding:8px 12px;font-size:15px}
+.fb{margin-top:10px;border-radius:10px;padding:10px 14px;font-size:15px}
+.fb.ok{background:#e3f5eb;color:#137a45}.fb.no{background:#fde8e8;color:#b42323}
+.step{border-right:4px solid #7a68d6;padding-right:12px;margin-bottom:16px}
+.step .n{font-size:13px;color:#7a68d6;font-weight:bold}
+.done{opacity:.75}
+.m{direction:ltr;unicode-bidi:isolate;font-family:"Times New Roman",serif;font-size:1.08em}
+.fc{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.82em;line-height:1.15;margin:0 2px}
+.fc span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
+.fig{text-align:center;margin:6px 0}
+.fig svg{max-width:330px;width:100%;height:auto}
+.prog{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.prog i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35)}.prog i.on{background:#fff}
+.big{text-align:center;font-size:20px;font-weight:bold;padding:10px}
+label{display:block;margin:8px 0 4px;font-weight:bold}
+input,select{width:100%;font:inherit;font-size:16px;padding:8px 10px;border:2px solid #e1e3ea;border-radius:10px}
+.foot{text-align:center;color:#8a8ea0;font-size:13px;margin-top:16px}
+@media(max-width:520px){.opts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top"><h1 id="ttl">تدريب المهارة</h1><div class="sk" id="sk"></div><div class="who" id="who"></div></div>
+<div class="wrap" id="app"></div>
+<div class="foot">اختبار فصل التبرير والبرهان · معلمة الرياضيات: ناهد علي عطار · مدرسة الموهوبات التقنية الثانوية</div>
+<script>
+const SAVE_URL="https://script.google.com/macros/s/AKfycby_HYmh-nMk9-EO3Q86QHOciMCGOry3h62pj-Zrhzy-qTym2UEthhksXF8u_-Si5X58KA/exec";
+const P=new URLSearchParams(location.search);
+const SID=Math.min(10,Math.max(1,parseInt(P.get("s")||"1")));
+const MODE=P.get("m")==="e"?"e":"r";
+let NAME=P.get("name")||"", CLS=P.get("cls")||"";
+const T0=Date.now(); let saved=false, attempts=0;
+
+/* ---------- helpers ---------- */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+const neg=n=>n<0?"−"+Math.abs(n):""+n;
+function F(n,d){ if(d<0){n=-n;d=-d} const g=gcd(n,d);n/=g;d/=g;
+  if(d===1) return M(neg(n));
+  return `<bdi dir="ltr" class="m">${n<0?"−":""}<span class="fc"><span>${Math.abs(n)}</span><span>${d}</span></span></bdi>`;}
+const M=s=>`<bdi dir="ltr" class="m">${s}</bdi>`;
+function coefX(n,d,v){ // coefficient times variable
+  if(d<0){n=-n;d=-d} const g=gcd(n,d);n/=g;d/=g;
+  if(n===0) return "";
+  if(d===1){ if(n===1) return v; if(n===-1) return "−"+v; return neg(n)+v; }
+  return F(n,d)+v;}
+function lin(n,d,b,yv="y",xv="x"){ // y = (n/d)x + b
+  let s=yv+" = "; const c=coefX(n,d,xv);
+  if(c){ s+=c; if(b>0) s+=" + "+b; else if(b<0) s+=" − "+(-b); }
+  else s+=neg(b);
+  return M(s);}
+const minus=(v,k)=>k===0?v:(k>0?`(${v} − ${k})`:`(${v} + ${-k})`);
+const minusN=(v,k)=>k===0?v:(k>0?`${v} − ${k}`:`${v} + ${-k}`);
+function ptSlope(n,d,x1,y1){ const g=gcd(n,d); n/=g; d/=g; if(d<0){n=-n;d=-d}
+  let c = d===1 ? (n===1?"":n===-1?"−":neg(n)) : F(n,d);
+  return M(`${minusN("y",y1)} = ${c}${minus("x",x1)}`);}
+function expr(p,q){ return M(`(${p===1?"":p}x ${q>=0?"+ "+q:"− "+(-q)})°`); }
+function mk(correct,wrongs){ const seen=new Set([correct]); const w=[];
+  for(const x of wrongs){ if(!seen.has(x)){seen.add(x);w.push(x)} if(w.length===3)break; }
+  const all=shuf([correct,...w]); return {opts:all,ci:all.indexOf(correct)}; }
+function S(q,correct,wrongs,hint){ return Object.assign({q,hint},mk(correct,wrongs)); }
+
+/* ---------- figures ---------- */
+const FIGS={};
+function figT(given){ // two parallel lines cut by transversal, angles 1..8
+  const P1=[126,70],P2=[180,160];
+  const off=[[-22,-8],[12,-8],[12,22],[-24,22]];
+  let s=`<svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg" font-family="Times New Roman" font-size="15">
+  <line x1="15" y1="70" x2="285" y2="70" stroke="#1f2233" stroke-width="2"/><line x1="15" y1="160" x2="285" y2="160" stroke="#1f2233" stroke-width="2"/>
+  <line x1="90" y1="10" x2="216" y2="220" stroke="#4b33b5" stroke-width="2"/>
+  <text x="270" y="62" font-style="italic">ℓ</text><text x="270" y="152" font-style="italic">m</text><text x="78" y="22" font-style="italic" fill="#4b33b5">t</text>`;
+  for(let k=1;k<=8;k++){const c=k<=4?P1:P2,o=off[(k-1)%4]; const hl=given&&given.includes(k);
+    s+=`<text x="${c[0]+o[0]}" y="${c[1]+o[1]}" ${hl?'fill="#d64545" font-weight="bold"':''}>${k}</text>`}
+  return s+"</svg>";}
+const BOX={A:[0,0,0],B:[1,0,0],C:[1,1,0],D:[0,1,0],E:[0,0,1],F:[1,0,1],G:[1,1,1],H:[0,1,1]};
+const EDGES=["AB","BC","CD","DA","EF","FG","GH","HE","AE","BF","CG","DH"];
+function pr(v){const [x,y,z]=BOX[v];return [70+x*150+y*60,230-z*130-y*50]}
+function figBox(hl){ let s=`<svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg" font-family="Times New Roman" font-size="16">`;
+  for(const e of EDGES){const [a,b]=[pr(e[0]),pr(e[1])];const hid=e.includes("D");const h=hl&&hl.some(x=>x===e||x===e[1]+e[0]);
+    s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${h?'#d64545':'#1f2233'}" stroke-width="${h?3:2}" ${hid?'stroke-dasharray="6 5"':''}/>`;}
+  const lo={A:[-16,16],B:[6,16],C:[8,6],D:[-18,4],E:[-18,-4],F:[4,-6],G:[6,-6],H:[-6,-8]};
+  for(const v in BOX){const p=pr(v);s+=`<text x="${p[0]+lo[v][0]}" y="${p[1]+lo[v][1]}">${v}</text>`}
+  return s+"</svg>";}
+
+/* ---------- geometry of angles ---------- */
+const inter=n=>n<=4?"P":"Q", quad=n=>(n-1)%4;
+const isIn=n=>(inter(n)==="P"&&quad(n)>=2)||(inter(n)==="Q"&&quad(n)<=1);
+const left=n=>quad(n)===0||quad(n)===3;
+function relName(i,j){
+  if(inter(i)===inter(j)) return Math.abs(quad(i)-quad(j))===2?"متقابلتان بالرأس":"متجاورتان على مستقيم";
+  if(quad(i)===quad(j)) return "متناظرتان";
+  if(isIn(i)&&isIn(j)) return left(i)===left(j)?"متحالفتان":"متبادلتان داخليًا";
+  if(!isIn(i)&&!isIn(j)) return left(i)===left(j)?"متحالفتان خارجيًا":"متبادلتان خارجيًا";
+  return "متناظرتان";}
+const MAIN4=["متناظرتان","متبادلتان داخليًا","متبادلتان خارجيًا","متحالفتان"];
+function pairOf(rel){ // pick (i,j) from different intersections with relation rel
+  const all=[];for(let i=1;i<=4;i++)for(let j=5;j<=8;j++)if(relName(i,j)===rel)all.push(Math.random()<.5?[i,j]:[j,i]);
+  return pick(all);}
+const pos=n=>isIn(n)?"داخلية":"خارجية";
+const congr=(i,j)=>(i%2)===(j%2);
+
+/* ---------- skills ---------- */
+function B(name,rule,items){ let used=[]; return {name,rule,gen(){ if(used.length>=items.length) used=[]; let k; do{k=Math.floor(Math.random()*items.length)}while(used.includes(k)); used.push(k);
+  const [q,c,w,hint,sol,st]=items[k]; return Object.assign({q,hint,sol,steps:st.map(s=>S(s[0],s[1],s[2],s[3]))},mk(c,w)); }}; }
+const SK=[null,
+B("التبرير الاستقرائي والتخمين","<b>التبرير الاستقرائي</b>: نلاحظ نمطًا في أمثلة محددة ثم نكتب <b>تخمينًا</b> عامًا. نسأل: ما الذي يتغير؟ وبأي مقدار؟ وما الذي يتكرر؟",[
+ [`ما الحد التالي في المتتابعة: ${M("3, 7, 11, 15, …")}؟`,M("19"),[M("18"),M("20"),M("30")],"احسبي الفرق بين كل حدين متتاليين.","الفرق ثابت = 4، إذن الحد التالي 15 + 4 = 19.",[
+  ["ما الفرق بين كل حدين متتاليين؟",M("4"),[M("3"),M("7"),M("8")],"7 − 3 = ؟"],
+  ["إذن الحد التالي هو 15 + 4 =",M("19"),[M("18"),M("20"),M("60")],"أضيفي الفرق للحد الأخير."]]],
+ [`ما الحد التالي في المتتابعة: ${M("2, 6, 18, 54, …")}؟`,M("162"),[M("108"),M("90"),M("72")],"قارني كل حد بالحد الذي قبله بالقسمة.","كل حد = الحد السابق × 3، إذن 54 × 3 = 162.",[
+  ["كيف ننتقل من 2 إلى 6 ومن 6 إلى 18؟","نضرب في 3",["نجمع 4","نجمع 12","نضرب في 2"],"6 ÷ 2 = ؟ و 18 ÷ 6 = ؟"],
+  ["إذن الحد التالي = 54 × 3 =",M("162"),[M("108"),M("57"),M("216")],"اضربي الحد الأخير في 3."]]],
+ ["في المتتابعة: مثلث، مربع، خماسي، … ما الشكل التالي؟","سداسي",["مثلث","سباعي","ثماني"],"عدّي الأضلاع في كل شكل.","عدد الأضلاع: 3، 4، 5، … فالتالي له 6 أضلاع: سداسي.",[
+  ["كم يزيد عدد الأضلاع من شكل إلى التالي؟","ضلعًا واحدًا",["ضلعين","لا يتغير","ثلاثة أضلاع"],"المثلث 3 أضلاع والمربع 4."],
+  ["إذن الشكل التالي للخماسي له:","6 أضلاع (سداسي)",["5 أضلاع","7 أضلاع","8 أضلاع"],"5 + 1 = ؟"]]]]),
+B("إيجاد مثال مضاد لتخمين","<b>المثال المضاد</b>: مثال واحد يحقق الفرض ولا يحقق النتيجة، فيثبت أن التخمين خاطئ. جرّبي القيم الخاصة: الصفر، والأعداد السالبة، والكسور.",[
+ [`أيّ قيمة تُعدّ مثالًا مضادًا للعبارة: «${M("n²")} عدد موجب دائمًا»؟`,M("0"),[M("−3"),M("2"),M("10")],"جرّبي الصفر: هل 0² موجب؟","0² = 0، والصفر ليس موجبًا، فالعبارة خاطئة.",[
+  ["هل مربع العدد السالب موجب؟ مثلًا (−3)² =",M("9 (موجب)"),[M("−9 (سالب)"),M("0")],"سالب × سالب = موجب."],
+  ["ما قيمة 0²؟ وهل هي موجبة؟","0، وليست موجبة",["0، وهي موجبة","1، وهي موجبة"],"الصفر لا موجب ولا سالب."]]],
+ [`أيّ قيمة تُعدّ مثالًا مضادًا للعبارة: «إذا كان ${M("x² = 16")} فإن ${M("x = 4")}»؟`,M("x = −4"),[M("x = 4"),M("x = 16"),M("x = 8")],"ابحثي عن عدد آخر مربعه 16.","(−4)² = 16 لكن −4 ≠ 4، فالعبارة خاطئة.",[
+  ["المثال المضاد يجب أن يحقق الفرض ولا يحقق:","النتيجة",["الفرض","الاثنين معًا"],"تذكّري تعريف المثال المضاد."],
+  ["أيّ عدد غير 4 مربعه 16؟",M("−4"),[M("8"),M("2"),M("16")],"(−4) × (−4) = ؟"]]],
+ ["أيّ مما يأتي مثال مضاد للعبارة: «كل عدد أولي فردي»؟",M("2"),[M("3"),M("9"),M("7")],"هل يوجد عدد أولي زوجي؟","2 عدد أولي (له قاسمان فقط) لكنه زوجي.",[
+  ["العدد الأولي هو عدد له قاسمان فقط. هل 2 أولي؟","نعم",["لا"],"قواسم 2 هي: 1 و 2."],
+  ["هل 2 فردي أم زوجي؟","زوجي",["فردي"],"2 يقبل القسمة على 2."]]]]),
+B("جداول الصواب (النفي والوصل)","<b>النفي <bdi dir='ltr' class='m'>~p</bdi></b> يعكس قيمة الصواب. <b>الوصل <bdi dir='ltr' class='m'>p ∧ q</bdi></b> صائب فقط إذا كان الطرفان صائبين. <b>الفصل <bdi dir='ltr' class='m'>p ∨ q</bdi></b> خاطئ فقط إذا كان الطرفان خاطئين.",[
+ [`إذا كانت قيم q هي ${M("T F T F")} فما قيم ${M("~q")}؟`,M("F T F T"),[M("T F T F"),M("F F T T"),M("T T F F")],"النفي يعكس كل قيمة.","نعكس كل قيمة: T ← F و F ← T.",[
+  ["نفي القيمة T هو:",M("F"),[M("T")],"النفي يعكس."],
+  ["إذن عمود ~q للقيم T F T F هو:",M("F T F T"),[M("T F T F"),M("F F T T")],"اعكسي كل قيمة بالترتيب."]]],
+ [`إذا كانت ${M("p = T T F F")} و ${M("~q = F T F T")}، فما قيم ${M("p ∧ ~q")}؟`,M("F T F F"),[M("F T F T"),M("T T F F"),M("T F T F")],"الوصل صائب فقط عندما يكون الطرفان T.","الصف الثاني فقط فيه الطرفان T، فالقيم F T F F.",[
+  ["الوصل p ∧ ~q صائب عندما:","يكون p و ~q صائبين معًا",["يكون أحدهما صائبًا","يكونان خاطئين معًا"],"راجعي القاعدة."],
+  ["في أي صف يكون p = T و ~q = T؟","الصف الثاني",["الصف الأول","الصف الثالث","الصف الرابع"],"قارني العمودين صفًا صفًا."]]],
+ [`إذا كانت ${M("p = T T F F")} و ${M("q = T F T F")}، فما قيم ${M("p ∨ q")}؟`,M("T T T F"),[M("T F F F"),M("F T T F"),M("T T F F")],"الفصل خاطئ فقط عندما يكون الطرفان F.","الصف الأخير فقط فيه الطرفان F.",[
+  ["الفصل p ∨ q خاطئ عندما:","يكون الطرفان خاطئين",["يكون أحدهما خاطئًا","يكون الطرفان صائبين"],"راجعي القاعدة."],
+  ["في أي صف يكون p = F و q = F؟","الصف الرابع",["الصف الثالث","الصف الثاني"],"ابحثي عن F في العمودين معًا."]]]]),
+B("العبارة الشرطية: الفرض والنتيجة","العبارة الشرطية تُكتب <b>إذا p، فإن q</b>: الجزء بعد «إذا» هو <b>الفرض</b>، والجزء بعد «فإن» هو <b>النتيجة</b>. قد تأتي النتيجة أولًا في الجملة.",[
+ ["عيّني النتيجة في العبارة: «سأذهب إلى الحديقة إذا كان الجو جميلًا».","سأذهب إلى الحديقة",["الجو جميل","الجو ليس جميلًا","لن أذهب إلى الحديقة"],"أعيدي كتابتها بصيغة: إذا ... فإن ...","إذا كان الجو جميلًا، فإنني سأذهب إلى الحديقة ← النتيجة: سأذهب إلى الحديقة.",[
+  ["أعيدي كتابة العبارة بصيغة «إذا ... فإن ...»:","إذا كان الجو جميلًا، فإنني سأذهب إلى الحديقة",["إذا ذهبت إلى الحديقة، فإن الجو جميل"],"ما الشرط الذي يأتي بعد «إذا» في الجملة الأصلية؟"],
+  ["النتيجة هي ما يأتي بعد:","فإن",["إذا"],"راجعي القاعدة."]]],
+ [`عيّني الفرض في العبارة: «إذا كان ${M("2x = 10")}، فإن ${M("x = 5")}».`,M("2x = 10"),[M("x = 5"),M("x ≠ 5"),M("2x ≠ 10")],"الفرض بعد «إذا».","الفرض هو 2x = 10.",[
+  ["الفرض يأتي بعد كلمة:","إذا",["فإن"],"راجعي القاعدة."],
+  ["إذن الفرض هو:",M("2x = 10"),[M("x = 5")],"اقرئي ما بعد «إذا»."]]],
+ ["عيّني النتيجة في العبارة: «الزاوية القائمة قياسها 90°».","قياسها 90°",["الزاوية قائمة","الزاوية حادة","قياسها أقل من 90°"],"اكتبيها: إذا كانت الزاوية قائمة، فإن ...","إذا كانت الزاوية قائمة فإن قياسها 90° ← النتيجة: قياسها 90°.",[
+  ["الصيغة الشرطية للعبارة:","إذا كانت الزاوية قائمة، فإن قياسها 90°",["إذا كان قياسها 90°، فإنها حادة"],"الموضوع يصبح فرضًا والوصف يصبح نتيجة."],
+  ["إذن النتيجة:","قياسها 90°",["الزاوية قائمة"],"ما بعد «فإن»."]]]]),
+B("العكس والمعكوس والمعاكس الإيجابي","للعبارة <b>p → q</b>: <b>العكس</b> <bdi dir='ltr' class='m'>q → p</bdi> (تبديل)، <b>المعكوس</b> <bdi dir='ltr' class='m'>~p → ~q</bdi> (نفي)، <b>المعاكس الإيجابي</b> <bdi dir='ltr' class='m'>~q → <bdi dir='ltr' class='m'>~p</bdi></bdi> (تبديل ونفي).",[
+ [`ما معكوس العبارة: «إذا كان ${M("x = 3")}، فإن ${M("x + 1 = 4")}»؟`,`إذا كان ${M("x ≠ 3")}، فإن ${M("x + 1 ≠ 4")}`,[`إذا كان ${M("x + 1 = 4")}، فإن ${M("x = 3")}`,`إذا كان ${M("x + 1 ≠ 4")}، فإن ${M("x ≠ 3")}`],"المعكوس: ننفي الفرض والنتيجة دون تبديل.","المعكوس ~p → ~q.",[
+  ["المعكوس يعني:","ننفي الفرض والنتيجة",["نبدّل الفرض والنتيجة","نبدّل وننفي"],"راجعي القاعدة."],
+  [`نفي ${M("x = 3")} هو:`,M("x ≠ 3"),[M("x = −3"),M("x > 3")],"النفي يغيّر = إلى ≠."]]],
+ ["ما عكس العبارة: «إذا كان الشكل مربعًا، فإن له أربعة أضلاع»؟","إذا كان للشكل أربعة أضلاع، فإنه مربع",["إذا لم يكن الشكل مربعًا، فليس له أربعة أضلاع","إذا لم يكن للشكل أربعة أضلاع، فإنه ليس مربعًا"],"العكس: نبدّل الفرض والنتيجة.","العكس q → p.",[
+  ["العكس يعني:","نبدّل الفرض والنتيجة",["ننفي الفرض والنتيجة","نبدّل وننفي"],"راجعي القاعدة."],
+  ["الفرض الجديد في العكس هو:","للشكل أربعة أضلاع",["الشكل مربع","ليس للشكل أربعة أضلاع"],"النتيجة القديمة تصبح فرضًا."]]],
+ [`ما المعاكس الإيجابي للعبارة: «إذا كان ${M("x = 5")}، فإن ${M("2x = 10")}»؟`,`إذا كان ${M("2x ≠ 10")}، فإن ${M("x ≠ 5")}`,[`إذا كان ${M("2x = 10")}، فإن ${M("x = 5")}`,`إذا كان ${M("x ≠ 5")}، فإن ${M("2x ≠ 10")}`],"المعاكس الإيجابي: نبدّل وننفي معًا.","المعاكس الإيجابي ~q → ~p.",[
+  ["المعاكس الإيجابي يعني:","نبدّل الفرض والنتيجة وننفيهما",["ننفي فقط","نبدّل فقط"],"راجعي القاعدة."],
+  ["الفرض في المعاكس الإيجابي هو:",M("2x ≠ 10"),[M("x ≠ 5"),M("2x = 10")],"نفي النتيجة الأصلية."]]]]),
+B("التبرير الاستنتاجي: قانونا الفصل والقياس المنطقي","<b>قانون الفصل</b>: إذا كانت <bdi dir='ltr' class='m'>p → q</bdi> صائبة وp صائبة، فإن q صائبة. <b>قانون القياس</b>: إذا كانت <bdi dir='ltr' class='m'>p → q</bdi> و <bdi dir='ltr' class='m'>q → r</bdi> صائبتين، فإن <bdi dir='ltr' class='m'>p → r</bdi> صائبة.",[
+ ["المعطيات: إذا أمطرت فإن الشارع يبتل. لقد أمطرت. النتيجة: الشارع مبتل. ما القانون المستعمل؟","قانون الفصل المنطقي",["قانون القياس المنطقي","التخمين","المثال المضاد"],"هل عندنا عبارة شرطية وتحقق فرضها؟","عندنا p → q وتحقق p فاستنتجنا q: قانون الفصل.",[
+  ["كم عبارة شرطية في المعطيات؟","واحدة",["اثنتان","لا يوجد"],"عدّي جمل «إذا ... فإن»."],
+  ["الجملة «لقد أمطرت» هي:","تحقق الفرض p",["تحقق النتيجة q","عبارة شرطية"],"قارنيها بما بعد «إذا»."]]],
+ ["المعطيات: إذا درستِ فإنكِ تنجحين. إذا نجحتِ فإنكِ تفرحين. النتيجة: إذا درستِ فإنكِ تفرحين. ما القانون؟","قانون القياس المنطقي",["قانون الفصل المنطقي","التخمين","العكس"],"عدّي العبارات الشرطية المتسلسلة.","p → q و q → r أعطتا p → r: قانون القياس.",[
+  ["كم عبارة شرطية في المعطيات؟","اثنتان",["واحدة","ثلاث"],"عدّي جمل «إذا ... فإن»."],
+  ["هل نتيجة الأولى هي فرض الثانية؟","نعم (النجاح)",["لا"],"قارني «تنجحين» في الجملتين."]]],
+ ["إذا كانت الزاوية قائمة فإن قياسها 90°. ∠A قائمة. ماذا نستنتج بقانون الفصل؟",`${M("m∠A = 90°")}`,[`${M("∠A")} حادة`,"لا يمكن الاستنتاج",`${M("m∠A = 180°")}`],"تحقق الفرض، فما النتيجة؟","بقانون الفصل: قياس ∠A = 90°.",[
+  ["هل تحقق فرض العبارة الشرطية؟","نعم، ∠A قائمة",["لا"],"الفرض: الزاوية قائمة."],
+  ["إذن النتيجة الصحيحة هي:",M("m∠A = 90°"),[M("m∠A = 45°")],"ما بعد «فإن»."]]]]),
+B("المسلّمات وأنواع البراهين","<b>المسلّمات</b>: يمر بنقطتين مستقيم واحد فقط، ويتقاطع مستقيمان في نقطة واحدة، ويتقاطع مستويان في مستقيم. <b>البرهان الجبري</b>: سلسلة معادلات مع تبرير كل خطوة بخاصية.",[
+ ["الجملة «إذا تقاطع مستويان فإن تقاطعهما مستقيم» تكون:","صحيحة دائمًا",["صحيحة أحيانًا","غير صحيحة أبدًا","لا يمكن التحديد"],"تذكّري مسلّمة تقاطع المستويين.","هذه مسلّمة: تقاطع مستويين مستقيم دائمًا.",[
+  ["تقاطع مستويين هو:","مستقيم",["نقطة","مستوى"],"تخيّلي جدارين يلتقيان."],
+  ["هل يحدث ذلك في كل حالة تقاطع؟","نعم دائمًا",["أحيانًا"],"إنها مسلّمة."]]],
+ ["الجملة «يمر بأي نقطتين أكثر من مستقيم» تكون:","غير صحيحة أبدًا",["صحيحة دائمًا","صحيحة أحيانًا","لا يمكن التحديد"],"كم مستقيمًا يمر بنقطتين؟","يمر بنقطتين مستقيم واحد فقط.",[
+  ["كم مستقيمًا يمر بنقطتين مختلفتين؟","واحد فقط",["اثنان","عدد لا نهائي"],"المسلّمة."],
+  ["إذن الجملة:","غير صحيحة أبدًا",["صحيحة دائمًا"],"تعارض المسلّمة."]]],
+ ["البرهان الذي نكتب فيه سلسلة معادلات مع تبرير كل خطوة بخاصية جبرية هو:","البرهان الجبري",["البرهان الحر","البرهان الهندسي","التخمين"],"فكّري في المعادلات والخصائص.","البرهان الجبري يستعمل خصائص المساواة لحل معادلة.",[
+  ["البرهان الحر يُكتب على شكل:","فقرة",["جدول معادلات"],"«حر» = فقرة نصية."],
+  ["البرهان المكوّن من معادلات وخصائص جبرية هو:","البرهان الجبري",["البرهان الحر"],"الاسم يدل عليه."]]]]),
+B("خصائص المساواة والتطابق","<b>الانعكاس</b>: <bdi dir='ltr' class='m'>a = a</bdi>. <b>التماثل</b>: إذا <bdi dir='ltr' class='m'>a = b</bdi> فإن <bdi dir='ltr' class='m'>b = a</bdi>. <b>التعدي</b>: إذا <bdi dir='ltr' class='m'>a = b</bdi> و <bdi dir='ltr' class='m'>b = c</bdi> فإن <bdi dir='ltr' class='m'>a = c</bdi>. <b>التعويض</b>: إذا <bdi dir='ltr' class='m'>a = b</bdi> أمكن وضع b مكان a.",[
+ [`ما الخاصية التي تبرر: «${M("AB = AB")}»؟`,"الانعكاس",["التماثل","التعدي","التعويض"],"الشيء يساوي نفسه.","a = a هي خاصية الانعكاس.",[
+  ["هل الطرفان هما الشيء نفسه؟","نعم",["لا"],"قارني الطرفين."],
+  ["الشيء يساوي نفسه هو خاصية:","الانعكاس",["التماثل"],"راجعي القاعدة."]]],
+ [`ما الخاصية التي تبرر: «إذا كان ${M("m∠1 = m∠2")}، فإن ${M("m∠2 = m∠1")}»؟`,"التماثل",["الانعكاس","التعدي","التعويض"],"لاحظي تبديل الطرفين.","تبديل الطرفين: خاصية التماثل.",[
+  ["ماذا حدث للطرفين؟","تبادلا مكانيهما",["لم يتغيرا","ظهر طرف ثالث"],"قارني قبل وبعد."],
+  ["التبديل هو خاصية:","التماثل",["التعدي"],"راجعي القاعدة."]]],
+ [`ما الخاصية التي تبرر: «إذا كان ${M("a = 5")} و ${M("a + b = 9")}، فإن ${M("5 + b = 9")}»؟`,"التعويض",["التعدي","التماثل","الانعكاس"],"وُضع 5 مكان a.","استبدلنا a بقيمتها: خاصية التعويض.",[
+  ["ماذا حدث للرمز a في المعادلة الثانية؟","وُضعت قيمته 5 مكانه",["بقي كما هو"],"قارني المعادلتين."],
+  ["وضع قيمة مكان رمز هو خاصية:","التعويض",["التعدي"],"راجعي القاعدة."]]]]),
+B("إثبات علاقات القطع المستقيمة","<b>مسلّمة جمع أطوال القطع</b>: إذا كانت B بين A وC فإن <bdi dir='ltr' class='m'>AB + BC = AC</bdi>، والعكس صحيح. النقطة التي تقع بين الأخريين هي التي يساوي مجموع البعدين عنها طول القطعة الكبرى.",[
+ [`النقاط ${M("P, Q, R")} على استقامة واحدة، و ${M("PQ = 3")} و ${M("QR = 5")} و ${M("PR = 8")}. أي نقطة بين الأخريين؟`,M("Q"),[M("P"),M("R"),"المعطيات غير كافية"],"أي مجموع طولين يساوي الطول الثالث؟","3 + 5 = 8 أي PQ + QR = PR، إذن Q بين P وR.",[
+  ["ما أطول قطعة؟",M("PR = 8"),[M("QR = 5"),M("PQ = 3")],"قارني الأطوال."],
+  ["مجموع القطعتين الأخريين PQ + QR =",M("8"),[M("2"),M("15")],"3 + 5"],
+  ["النقطة المشتركة بين PQ و QR هي:",M("Q"),[M("P"),M("R")],"الحرف المكرر."]]],
+ [`إذا كانت B بين A وC، و ${M("AB = 7")} و ${M("BC = 4")}، فما ${M("AC")}؟`,M("11"),[M("3"),M("28"),M("7")],"استعملي مسلّمة جمع أطوال القطع.","AC = AB + BC = 7 + 4 = 11.",[
+  ["بما أن B بين A وC، فإن:",M("AB + BC = AC"),[M("AB − BC = AC"),M("AC + BC = AB")],"المسلّمة."],
+  ["إذن AC =",M("11"),[M("3")],"7 + 4"]]],
+ [`إذا كانت M بين A وB، و ${M("AM = 2x")} و ${M("MB = x + 3")} و ${M("AB = 12")}، فما قيمة ${M("x")}؟`,M("3"),[M("4"),M("5"),M("9")],"اكتبي معادلة جمع الأطوال.","2x + x + 3 = 12 ⇐ 3x = 9 ⇐ x = 3.",[
+  ["المعادلة الصحيحة:",M("2x + (x + 3) = 12"),[M("2x − (x + 3) = 12"),M("2x = x + 3")],"AM + MB = AB"],
+  ["بعد التبسيط 3x + 3 = 12 فإن x =",M("3"),[M("5"),M("4")],"اطرحي 3 ثم اقسمي على 3."]]]]),
+B("إثبات علاقات الزوايا","<b>المتتامتان</b> مجموعهما 90°، و<b>المتكاملتان</b> مجموعهما 180°، و<b>المتجاورتان على مستقيم</b> متكاملتان، و<b>المتقابلتان بالرأس</b> متطابقتان.",[
+ [`زاويتان متتامتان، قياس إحداهما ${M("35°")}. ما قياس الأخرى؟`,M("55°"),[M("145°"),M("35°"),M("65°")],"المتتامتان مجموعهما 90°.","90 − 35 = 55°.",[
+  ["مجموع الزاويتين المتتامتين:",M("90°"),[M("180°"),M("360°")],"راجعي القاعدة."],
+  ["القياس المطلوب = 90 − 35 =",M("55°"),[M("145°")],"اطرحي."]]],
+ [`زاويتان متجاورتان على مستقيم: ${M("(3x + 10)°")} و ${M("(2x + 20)°")}. ما قيمة ${M("x")}؟`,M("30"),[M("34"),M("26"),M("10")],"المتجاورتان على مستقيم مجموعهما 180°.","3x + 10 + 2x + 20 = 180 ⇐ 5x = 150 ⇐ x = 30.",[
+  ["المعادلة الصحيحة:",M("(3x + 10) + (2x + 20) = 180"),[M("3x + 10 = 2x + 20"),M("(3x + 10) + (2x + 20) = 90")],"متكاملتان."],
+  ["بعد التبسيط 5x + 30 = 180 فإن x =",M("30"),[M("42"),M("36")],"اطرحي 30 ثم اقسمي على 5."]]],
+ [`زاويتان متقابلتان بالرأس قياساهما ${M("(4x − 6)°")} و ${M("(2x + 30)°")}. ما قيمة ${M("x")}؟`,M("18"),[M("24"),M("4"),M("12")],"المتقابلتان بالرأس متطابقتان.","4x − 6 = 2x + 30 ⇐ 2x = 36 ⇐ x = 18.",[
+  ["العلاقة بين المتقابلتين بالرأس:","متطابقتان",["متكاملتان","متتامتان"],"راجعي القاعدة."],
+  ["حل 4x − 6 = 2x + 30 هو x =",M("18"),[M("12"),M("24")],"اجمعي الحدود المتشابهة."]]]])
+];
+const EN=[null,
+ {q:`ما الحد العاشر في المتتابعة: ${M("1, 4, 9, 16, …")}؟`,opts:[M("100"),M("81"),M("40"),M("121")],ci:0,hint:"الحدود مربعات كاملة.",sol:"الحد النوني n²، فالحد العاشر 10² = 100."},
+ {q:`أيّ قيمة تُعدّ مثالًا مضادًا للعبارة: «${M("x³ > x")} لكل عدد حقيقي»؟`,opts:[M("0.5"),M("2"),M("3"),M("10")],ci:0,hint:"جرّبي كسرًا بين 0 و1.",sol:"0.5³ = 0.125 وهي أصغر من 0.5."},
+ {q:`كم صفًّا يلزم في جدول الصواب لعبارة تحوي ثلاث عبارات ${M("p, q, r")}؟`,opts:[M("8"),M("6"),M("3"),M("9")],ci:0,hint:"لكل عبارة قيمتان.",sol:"2 × 2 × 2 = 8 صفوف."},
+ {q:"أيّ مما يأتي تكون فيه العبارة الشرطية p → q خاطئة؟",opts:["p صائبة و q خاطئة","p خاطئة و q صائبة","p و q صائبتان","p و q خاطئتان"],ci:0,hint:"الشرطية تُخلف وعدها فقط عندما يتحقق الفرض ولا تتحقق النتيجة.",sol:"تكون p → q خاطئة فقط إذا كانت p صائبة و q خاطئة."},
+ {q:"أيّ العبارات المرتبطة لها دائمًا قيمة الصواب نفسها للعبارة الشرطية الأصلية؟",opts:["المعاكس الإيجابي","العكس","المعكوس","لا شيء منها"],ci:0,hint:"العكس والمعكوس متكافئان معًا.",sol:"العبارة الشرطية ومعاكسها الإيجابي متكافئان منطقيًا."},
+ {q:"إذا كانت الزاوية حادة فإن قياسها أقل من 90°. ∠B قياسها 60°. ماذا نستنتج؟",opts:["لا يمكن الاستنتاج بقانون الفصل","∠B حادة بقانون الفصل","∠B منفرجة","∠B قائمة"],ci:0,hint:"المعطى تحقيق للنتيجة لا للفرض.",sol:"تحقق النتيجة لا يُستعمل في قانون الفصل (رغم أن ∠B حادة فعلًا لسبب آخر)."},
+ {q:"ثلاث نقاط ليست على استقامة واحدة، كم مستوى يمر بها؟",opts:["مستوى واحد فقط","مستويان","ثلاثة مستويات","عدد لا نهائي"],ci:0,hint:"مسلّمة المستوى.",sol:"يمر بثلاث نقاط ليست على استقامة واحدة مستوى واحد فقط."},
+ {q:`ما الخاصية التي تبرر: «إذا كان ${M("AB ≅ CD")} و ${M("CD ≅ EF")}، فإن ${M("AB ≅ EF")}»؟`,opts:["التعدي للتطابق","التماثل للتطابق","الانعكاس للتطابق","التعويض"],ci:0,hint:"السلسلة a = b و b = c.",sol:"خاصية التعدي للتطابق."},
+ {q:`M نقطة منتصف ${M("AB")}، و ${M("AM = 3x + 1")} و ${M("MB = 5x − 7")}. ما طول ${M("AB")}؟`,opts:[M("26"),M("13"),M("4"),M("20")],ci:0,hint:"نقطة المنتصف تجعل القطعتين متطابقتين.",sol:"3x + 1 = 5x − 7 ⇐ x = 4، AM = 13، AB = 26."},
+ {q:"زاويتان متكاملتان، قياس إحداهما يساوي ضعف قياس الأخرى. ما قياس الكبرى؟",opts:[M("120°"),M("60°"),M("90°"),M("135°")],ci:0,hint:"x + 2x = 180.",sol:"3x = 180 ⇐ x = 60، والكبرى 120°."}
+];
+
+for(let k=1;k<EN.length;k++){const e=EN[k];Object.assign(e,mk(e.opts[e.ci],e.opts.filter((_,i)=>i!==e.ci)));}
+/* ---------- saving ---------- */
+const QUIZ="ف1 "+(MODE==="r"?"علاج: ":"إثراء: ")+"م"+SID+" "+SK[SID].name.split(" ").slice(0,4).join(" ");
+function payload(score,total,marks){return JSON.stringify({quiz:QUIZ,name:NAME,cls:CLS,score,total,secs:Math.round((Date.now()-T0)/1000),marks});}
+function save(score,total,marks){ if(saved) return; saved=true;
+  try{fetch(SAVE_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:payload(score,total,marks)})}catch(e){} }
+window.addEventListener("pagehide",()=>{ if(!saved&&NAME&&started&&MODE==="r"){ saved=true; try{navigator.sendBeacon(SAVE_URL,payload(0,1,["لم تتقن بعد",attempts]))}catch(e){} }});
+
+/* ---------- UI ---------- */
+const app=document.getElementById("app"); let started=false;
+document.getElementById("ttl").textContent=MODE==="r"?"خطة علاجية حتى الإتقان":"خطة إثرائية";
+document.getElementById("sk").textContent="المهارة "+SID+": "+SK[SID].name;
+function who(){document.getElementById("who").textContent=NAME?(NAME+(CLS?" · "+CLS:"")):"";}
+who();
+function el(h){const d=document.createElement("div");d.innerHTML=h;return d.firstElementChild;}
+
+function askQ(box,prob,onAnswer,{retry=false}={}){ // renders options
+  const o=box.querySelector(".opts"); const hb=box.querySelector(".hb"), hn=box.querySelector(".hint");
+  if(hb) hb.onclick=()=>{hn.style.display="block"};
+  prob.opts.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.innerHTML=t;o.appendChild(b);
+    b.onclick=()=>{ const ok=k===prob.ci;
+      if(ok){ b.classList.add("ok"); o.querySelectorAll("button").forEach(x=>x.disabled=true); onAnswer(true); }
+      else if(retry){ b.classList.add("no"); b.disabled=true; hn.style.display="block"; onAnswer(false); }
+      else { b.classList.add("no"); o.children[prob.ci].classList.add("ok"); o.querySelectorAll("button").forEach(x=>x.disabled=true); onAnswer(false); } };});
+}
+function qCard(title,prob){ return el(`<div class="card"><h2>${title}</h2>${prob.fig?`<div class="fig">${typeof prob.fig==="function"?prob.fig():prob.fig}</div>`:""}
+  <div class="q">${prob.q}</div><div class="opts"></div><button class="btn ghost hb">💡 تلميحة</button><div class="hint">${prob.hint}</div></div>`); }
+
+function start(){ started=true; app.innerHTML="";
+  app.appendChild(el(`<div class="card"><h2>تذكير بالقاعدة</h2><div class="rule">${SK[SID].rule}</div></div>`));
+  if(MODE==="e") return enrich();
+  mastery(); }
+
+function mastery(){ attempts++; const p=SK[SID].gen(); const c=qCard(attempts===1?"سؤال المهارة":"سؤال تحقّق جديد ("+attempts+")",p); app.appendChild(c); c.scrollIntoView({behavior:"smooth"});
+  askQ(c,p,ok=>{
+    if(ok){ c.appendChild(el(`<div class="fb ok">✔ إجابة صحيحة! ${p.sol}</div>`));
+      app.appendChild(el(`<div class="card"><div class="big">🌟 أحسنتِ يا ${NAME.split(" ")[0]||"بطلة"}! أتقنتِ المهارة</div><p style="text-align:center">${attempts===1?"من المحاولة الأولى":"بعد "+attempts+" محاولات"} — انتهى التدريب وحُفظت نتيجتكِ.</p></div>`));
+      save(1,1,["أتقنت",attempts]); }
+    else { c.appendChild(el(`<div class="fb no">✘ الإجابة غير صحيحة. الحل: ${p.sol}</div>`));
+      const b=el(`<button class="btn">ابدئي التدريب خطوة بخطوة ←</button>`); c.appendChild(b); b.onclick=()=>{b.remove();training();}; }
+  });}
+
+function training(){ const p=SK[SID].gen(); const c=el(`<div class="card"><h2>تدريب موجَّه: نحلّ معًا خطوة بخطوة</h2>${p.fig?`<div class="fig">${p.fig}</div>`:""}<div class="q">${p.q}</div><div class="steps"></div></div>`);
+  app.appendChild(c); c.scrollIntoView({behavior:"smooth"}); const box=c.querySelector(".steps"); let k=0;
+  (function next(){ if(k>=p.steps.length){ c.appendChild(el(`<div class="fb ok">✔ أنهيتِ خطوات الحل: ${p.sol}</div>`));
+       const b=el(`<button class="btn">جرّبي سؤالًا بنفسكِ ←</button>`); c.appendChild(b); b.onclick=()=>{b.remove();mastery();}; return; }
+    const s=p.steps[k]; const sc=el(`<div class="step"><div class="n">الخطوة ${k+1} من ${p.steps.length}</div><div class="q">${s.q}</div><div class="opts"></div><button class="btn ghost hb">💡 تلميحة</button><div class="hint">${s.hint}</div></div>`);
+    box.appendChild(sc); askQ(sc,s,ok=>{ if(ok){ sc.classList.add("done"); sc.querySelector(".hb").remove(); k++; next(); } },{retry:true}); })();
+}
+
+function enrich(){ const e=EN[SID]; const c=qCard("تحدٍّ إثرائي",e); app.appendChild(c);
+  askQ(c,e,ok=>{ c.appendChild(el(`<div class="fb ${ok?"ok":"no"}">${ok?"✔ رائع! إجابة صحيحة.":"✘ ليست الإجابة الصحيحة."} <br>${e.sol}</div>`)); save(ok?1:0,1,[ok?"صحيحة":"خاطئة"]); });}
+
+if(NAME) start();
+else{ app.appendChild(el(`<div class="card"><h2>قبل البدء</h2><label>اسم الطالبة</label><input id="nm"><label>الفصل</label>
+  <select id="cl"><option>أولى ١</option><option>أولى ٢</option><option>أولى ٣</option></select><button class="btn" id="go">ابدئي</button></div>`));
+  document.getElementById("go").onclick=()=>{const v=document.getElementById("nm").value.trim(); if(!v) return; NAME=v; CLS=document.getElementById("cl").value; who(); start();}; }
+</script>
+</body>
+</html>
