@@ -70,6 +70,14 @@ button:disabled{opacity:.4;cursor:default}
 .so{text-align:right;font:inherit;padding:9px 12px;border-radius:10px;border:2px solid var(--bd);background:#fff;color:var(--tx);cursor:pointer}
 .so.ok{border-color:var(--ok);background:var(--okb);font-weight:800}.so.no{border-color:var(--bad);background:var(--badb);opacity:.7}
 .sfb{font-weight:800;margin-top:8px}.sfb.good{color:var(--ok)}.sfb.bad{color:var(--bad)}.sex{display:none;margin-top:6px;color:var(--tx)}
+
+/* dark-mode fix for remediation panels */
+.rpn{color:var(--tx)}
+.rpn .sq,.rpn .sex{color:inherit}
+.so{background:var(--card)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .rpn[data-k="tip"]{background:#3a3016}:root:not([data-theme="light"]) .rpn[data-k="info"]{background:#16352a}:root:not([data-theme="light"]) .rpn[data-k="sim"]{background:#2c2344}}
+:root[data-theme="dark"] .rpn[data-k="tip"]{background:#3a3016}:root[data-theme="dark"] .rpn[data-k="info"]{background:#16352a}:root[data-theme="dark"] .rpn[data-k="sim"]{background:#2c2344}
+.fq{margin-top:10px;padding-top:10px;border-top:1.5px dashed currentColor;border-top-color:rgba(27,138,75,.45)}.fq .fqh{color:var(--ok)}
 </style>
 </head>
 <body>
@@ -148,56 +156,56 @@ var Q=[
  o:['مسلّمة التطابق ASA','نظرية التطابق AAS','مسلّمة التطابق SAS','لا يمكن إثبات التطابق'],a:0,
  h:'حدّدي الضلع المعلَّم: هل يقع بين الزاويتين المعلَّمتين أم لا؟',
  e:L('∠A ≅ ∠D')+'، '+L(OV('AB')+' ≅ '+OV('DE'))+'، '+L('∠B ≅ ∠E')+'. الضلع '+L(OV('AB'))+' محصور بين الزاويتين '+L('∠A')+' و '+L('∠B')+' ⇐ ASA.',
- rem:{tip:'في ASA يكون الضلع «بين» الزاويتين: رأسا الزاويتين هما طرفا الضلع.',
+ rem:{fix:{"q": "في حالة ASA، أين يقع الضلع المعطى بالنسبة إلى الزاويتين؟", "o": ["محصور بين الزاويتين", "غير محصور بين الزاويتين", "لا يوجد ضلع في هذه الحالة"], "a": 0, "e": "ASA: زاوية، ثم الضلع الذي بينهما، ثم زاوية."},tip:'في ASA يكون الضلع «بين» الزاويتين: رأسا الزاويتين هما طرفا الضلع.',
   info:'ASA (زاوية، ضلع، زاوية): إذا طابقت زاويتان والضلع المحصور بينهما في مثلث نظائرها في مثلث آخر، فالمثلثان متطابقان.',
   sim:{q:'في '+L('△PQR')+' و '+L('△XYZ')+': '+L('∠P ≅ ∠X')+'، '+L(OV('PQ')+' ≅ '+OV('XY'))+'، '+L('∠Q ≅ ∠Y')+'. ما الحالة؟',o:['ASA','AAS','SAS'],a:0,e:L(OV('PQ'))+' بين '+L('∠P')+' و '+L('∠Q')+' ⇐ ASA.'}}},
 {t:"m",tg:"AAS",q:'في الشكل، ما الحالة التي تثبت أن '+L('△ABC ≅ △DEF')+'؟',f:FB,
  o:['نظرية التطابق AAS','مسلّمة التطابق ASA','مسلّمة التطابق SSS','لا يمكن إثبات التطابق'],a:0,
  h:'الضلع المعلَّم '+L(OV('BC'))+': هل طرفاه هما رأسا الزاويتين '+L('A')+' و '+L('B')+'؟',
  e:L('∠A ≅ ∠D')+'، '+L('∠B ≅ ∠E')+'، و '+L(OV('BC')+' ≅ '+OV('EF'))+' ضلع غير محصور بين الزاويتين ⇐ AAS.',
- rem:{tip:'زاويتان + ضلع: إذا كان الضلع بينهما فهي ASA، وإذا لم يكن بينهما فهي AAS.',
+ rem:{fix:{"q": "معطى: <span class=\"ltr\">∠A ≅ ∠D</span>، <span class=\"ltr\">∠B ≅ ∠E</span>، <span class=\"ltr\"><span style=\"text-decoration:overline\">BC</span> ≅ <span style=\"text-decoration:overline\">EF</span></span>. هل <span class=\"ltr\"><span style=\"text-decoration:overline\">BC</span></span> محصور بين <span class=\"ltr\">∠A</span> و <span class=\"ltr\">∠B</span>؟", "o": ["نعم، فالحالة ASA", "لا، فالحالة AAS", "لا يمكن الحكم"], "a": 1, "e": "الضلع المحصور بين <span class=\"ltr\">∠A</span> و <span class=\"ltr\">∠B</span> هو <span class=\"ltr\"><span style=\"text-decoration:overline\">AB</span></span>، أما <span class=\"ltr\"><span style=\"text-decoration:overline\">BC</span></span> فغير محصور ⇐ AAS."},tip:'زاويتان + ضلع: إذا كان الضلع بينهما فهي ASA، وإذا لم يكن بينهما فهي AAS.',
   info:'AAS (زاوية، زاوية، ضلع): إذا طابقت زاويتان وضلع غير محصور بينهما في مثلث نظائرها في مثلث آخر، فالمثلثان متطابقان.',
   sim:{q:'في '+L('△KLM')+' و '+L('△RST')+': '+L('∠K ≅ ∠R')+'، '+L('∠L ≅ ∠S')+'، '+L(OV('LM')+' ≅ '+OV('ST'))+'. ما الحالة؟',o:['AAS','ASA','SSS'],a:0,e:L(OV('LM'))+' ليس بين '+L('∠K')+' و '+L('∠L')+' ⇐ AAS.'}}},
 {t:"m",tg:"الحالات الأربع",q:'أيّ مما يأتي <b>لا</b> يكفي وحده لإثبات تطابق مثلثين؟',
  o:['تطابق الزوايا الثلاث المتناظرة (AAA)','تطابق الأضلاع الثلاثة (SSS)','تطابق ضلعين والزاوية المحصورة بينهما (SAS)','تطابق زاويتين وضلع غير محصور (AAS)'],a:0,
  h:'تخيّلي مثلثًا صغيرًا ومثلثًا كبيرًا لهما الزوايا نفسها: هل هما متطابقان؟',
  e:'الحالات الأربع هي SSS و SAS و ASA و AAS. أما AAA فتعطي مثلثين متشابهين قد يختلفان في الحجم، فلا تثبت التطابق.',
- rem:{tip:'كل حالة تطابق تحتاج ضلعًا واحدًا على الأقل؛ الزوايا وحدها لا تحدد الحجم.',
+ rem:{fix:{"q": "أيّ مما يأتي من حالات التطابق؟", "o": ["SSA", "AAA", "AAS"], "a": 2, "e": "حالات التطابق الأربع: SSS، SAS، ASA، AAS فقط."},tip:'كل حالة تطابق تحتاج ضلعًا واحدًا على الأقل؛ الزوايا وحدها لا تحدد الحجم.',
   info:'حالات التطابق الأربع: SSS، SAS، ASA، AAS. وليست AAA ولا SSA من حالات التطابق.',
   sim:{q:'أيّ مما يأتي ليس حالة تطابق؟',o:['SSA','ASA','SSS'],a:0,e:'SSA (ضلعان وزاوية غير محصورة) لا تثبت التطابق.'}}},
 {t:"h",tg:"SAS + توازي + ضلع مشترك",q:'في الشكل، '+L(OV('AB')+' ∥ '+OV('DC'))+' و '+L(OV('AB')+' ≅ '+OV('DC'))+'. ما الذي يثبت أن '+L('△ABC ≅ △CDA')+'؟',f:FC,
  o:['SAS؛ لأن '+L('∠BAC ≅ ∠DCA')+' متبادلتان داخليًا و '+L(OV('AC'))+' مشترك','ASA؛ لأن '+L('∠B ≅ ∠D'),'SSS؛ لأن '+L(OV('AD')+' ≅ '+OV('BC')),'لا يمكن الإثبات'],a:0,
  h:'التوازي مع القاطع '+L(OV('AC'))+' يعطيك زاويتين متطابقتين. ما الضلع المشترك بين المثلثين؟',
  e:L(OV('AB')+' ≅ '+OV('CD'))+' (معطى)، '+L('∠BAC ≅ ∠DCA')+' (متبادلتان داخليًا)، '+L(OV('AC')+' ≅ '+OV('CA'))+' (انعكاس). الزاوية محصورة بين الضلعين ⇐ SAS.',
- rem:{tip:'عندما ترين مستقيمين متوازيين وقاطعًا، ابحثي عن الزوايا المتبادلة داخليًا.',
+ rem:{fix:{"q": "إذا كان <span class=\"ltr\"><span style=\"text-decoration:overline\">AB</span> ∥ <span style=\"text-decoration:overline\">DC</span></span> و <span class=\"ltr\"><span style=\"text-decoration:overline\">AC</span></span> قاطع لهما، فما العلاقة بين <span class=\"ltr\">∠BAC</span> و <span class=\"ltr\">∠DCA</span>؟", "o": ["متطابقتان؛ لأنهما متبادلتان داخليًا", "متكاملتان", "لا توجد علاقة بينهما"], "a": 0, "e": "مع التوازي: المتبادلتان داخليًا متطابقتان."},tip:'عندما ترين مستقيمين متوازيين وقاطعًا، ابحثي عن الزوايا المتبادلة داخليًا.',
   info:'إذا قطع قاطعٌ مستقيمين متوازيين فإن كل زاويتين متبادلتين داخليًا متطابقتان، والضلع المشترك يطابق نفسه (خاصية الانعكاس).',
   sim:{q:L(OV('PQ')+' ∥ '+OV('SR'))+' والقاطع '+L(OV('PR'))+'. ما العلاقة بين '+L('∠QPR')+' و '+L('∠SRP')+'؟',o:['متبادلتان داخليًا متطابقتان','متكاملتان','متقابلتان بالرأس'],a:0,e:'زاويتان متبادلتان داخليًا ⇐ متطابقتان.'}}},
 {t:"h",tg:"ASA + منصِّف زاوية",q:'في الشكل، '+L(OV('AC'))+' ينصّف '+L('∠BAD')+' و '+L('∠BCD')+'. ما الذي يثبت أن '+L('△ABC ≅ △ADC')+'؟',f:FD,
  o:['ASA؛ لأن '+L(OV('AC'))+' مشترك ومحصور بين زاويتين متطابقتين','AAS؛ لأن '+L('∠B ≅ ∠D'),'SAS؛ لأن '+L(OV('AB')+' ≅ '+OV('AD')),'SSS؛ لأن '+L(OV('AC'))+' مشترك'],a:0,
  h:'المنصِّف يقسم الزاوية إلى زاويتين متطابقتين. أين يقع '+L(OV('AC'))+' بالنسبة للزاويتين؟',
  e:L('∠BAC ≅ ∠DAC')+' و '+L('∠BCA ≅ ∠DCA')+' (تعريف المنصِّف)، و '+L(OV('AC')+' ≅ '+OV('AC'))+' (انعكاس) وهو محصور بين الزاويتين ⇐ ASA.',
- rem:{tip:'المنصِّف = زاويتان متطابقتان مجانًا، والضلع المشترك = ضلع مجاني.',
+ rem:{fix:{"q": "إذا كان <span class=\"ltr\"><span style=\"text-decoration:overline\">AC</span></span> ينصّف <span class=\"ltr\">∠BAD</span>، فأيّ العبارات الآتية صحيحة؟", "o": ["<span class=\"ltr\">∠BAC ≅ ∠BCA</span>", "<span class=\"ltr\">∠BAC ≅ ∠DAC</span>", "<span class=\"ltr\"><span style=\"text-decoration:overline\">AB</span> ≅ <span style=\"text-decoration:overline\">AD</span></span> دائمًا"], "a": 1, "e": "المنصِّف يقسم الزاوية إلى زاويتين متطابقتين: <span class=\"ltr\">∠BAC ≅ ∠DAC</span>."},tip:'المنصِّف = زاويتان متطابقتان مجانًا، والضلع المشترك = ضلع مجاني.',
   info:'منصِّف الزاوية يقسمها إلى زاويتين متطابقتين. إذا كان الضلع بين الزاويتين فالحالة ASA.',
   sim:{q:L(OV('KM'))+' ينصّف '+L('∠LKN')+'. ماذا نستنتج؟',o:[L('∠LKM ≅ ∠NKM'),L(OV('KL')+' ≅ '+OV('KN')),L('∠L ≅ ∠N')],a:0,e:'المنصِّف يعطي زاويتين متطابقتين: '+L('∠LKM ≅ ∠NKM')+'.'}}},
 {t:"h",tg:"AAS + متقابلتان بالرأس",q:'في الشكل، '+L(OV('AC'))+' و '+L(OV('BD'))+' يتقاطعان في '+L('X')+'، و '+L(OV('AB')+' ≅ '+OV('CD'))+' و '+L('∠B ≅ ∠D')+'. ما الذي يثبت أن '+L('△AXB ≅ △CXD')+'؟',f:FE,
  o:['AAS؛ لأن '+L('∠AXB ≅ ∠CXD')+' متقابلتان بالرأس و '+L(OV('AB'))+' غير محصور','ASA؛ لأن '+L(OV('AB'))+' محصور بين '+L('∠B')+' و '+L('∠AXB'),'SAS؛ لأن '+L(OV('AX')+' ≅ '+OV('XC')),'لا يمكن الإثبات'],a:0,
  h:'ما الزاوية «المجانية» عند '+L('X')+'؟ ثم تحقّقي: هل '+L(OV('AB'))+' بين '+L('∠B')+' و '+L('∠X')+'؟',
  e:L('∠AXB ≅ ∠CXD')+' (متقابلتان بالرأس)، '+L('∠B ≅ ∠D')+' (معطى)، '+L(OV('AB')+' ≅ '+OV('CD'))+' (معطى). الضلع المحصور بين '+L('∠B')+' و '+L('∠X')+' هو '+L(OV('BX'))+' لا '+L(OV('AB'))+' ⇐ AAS.',
- rem:{tip:'بعد تحديد الزاويتين، انظري إلى الضلع: هل يصل بين رأسيهما؟ إن لم يصل فهي AAS.',
+ rem:{fix:{"q": "المستقيمان <span class=\"ltr\"><span style=\"text-decoration:overline\">AC</span></span> و <span class=\"ltr\"><span style=\"text-decoration:overline\">BD</span></span> يتقاطعان في X. ما العلاقة بين <span class=\"ltr\">∠AXB</span> و <span class=\"ltr\">∠CXD</span>؟", "o": ["متكاملتان", "متتامتان", "متطابقتان؛ لأنهما متقابلتان بالرأس"], "a": 2, "e": "الزاويتان المتقابلتان بالرأس متطابقتان دائمًا."},tip:'بعد تحديد الزاويتين، انظري إلى الضلع: هل يصل بين رأسيهما؟ إن لم يصل فهي AAS.',
   info:'الزاويتان المتقابلتان بالرأس متطابقتان دائمًا. وفي AAS يقابل الضلعُ المعطى إحدى الزاويتين.',
   sim:{q:'في '+L('△PQR')+'، ما الضلع المحصور بين '+L('∠P')+' و '+L('∠R')+'؟',o:[L(OV('PR')),L(OV('PQ')),L(OV('QR'))],a:0,e:'الضلع الذي طرفاه رأسا الزاويتين: '+L(OV('PR'))+'.'}}},
 {t:"h",tg:"تحليل خطأ",q:'معطى: '+L('∠A ≅ ∠D')+'، '+L('∠B ≅ ∠E')+'، '+L(OV('AC')+' ≅ '+OV('DF'))+'. قالت ريم: «'+L('△ABC ≅ △DEF')+' بـ ASA». ما تقييمك؟',
  o:['خطأ في اسم الحالة؛ '+L(OV('AC'))+' غير محصور بين '+L('∠A')+' و '+L('∠B')+'، فالتطابق بـ AAS','صحيح؛ لأن لدينا زاويتين وضلعًا','خطأ؛ لا يمكن إثبات التطابق بهذه المعطيات','خطأ؛ لأن الحالة الصحيحة SAS'],a:0,
  h:'ما الضلع المحصور بين '+L('∠A')+' و '+L('∠B')+'؟ وهل هو '+L(OV('AC'))+'؟',
  e:'الضلع المحصور بين '+L('∠A')+' و '+L('∠B')+' هو '+L(OV('AB'))+'. أما '+L(OV('AC'))+' فغير محصور، فالمثلثان متطابقان فعلًا لكن بـ AAS لا ASA.',
- rem:{tip:'لا تكتفي بأن «زاويتين وضلع» تعني التطابق؛ سمّي الحالة بدقة حسب موقع الضلع.',
+ rem:{fix:{"q": "معطى: <span class=\"ltr\">∠P ≅ ∠S</span>، <span class=\"ltr\">∠Q ≅ ∠T</span>، <span class=\"ltr\"><span style=\"text-decoration:overline\">PQ</span> ≅ <span style=\"text-decoration:overline\">ST</span></span>. ما اسم الحالة؟", "o": ["ASA", "AAS", "SAS"], "a": 0, "e": "<span class=\"ltr\"><span style=\"text-decoration:overline\">PQ</span></span> يقع بين <span class=\"ltr\">∠P</span> و <span class=\"ltr\">∠Q</span>، فهو محصور ⇐ ASA."},tip:'لا تكتفي بأن «زاويتين وضلع» تعني التطابق؛ سمّي الحالة بدقة حسب موقع الضلع.',
   info:'ASA: الضلع بين الزاويتين. AAS: الضلع ليس بين الزاويتين. كلتاهما تثبت التطابق، لكن الاسم يجب أن يطابق الموقع.',
   sim:{q:'معطى: '+L('∠P ≅ ∠X')+'، '+L(OV('PQ')+' ≅ '+OV('XY'))+'، '+L('∠Q ≅ ∠Y')+'. ما الحالة الصحيحة؟',o:['ASA','AAS','لا يمكن'],a:0,e:L(OV('PQ'))+' بين '+L('∠P')+' و '+L('∠Q')+' ⇐ ASA.'}}},
 {t:"h",tg:"ASA وحل معادلة",q:'في '+L('△ABC')+' و '+L('△DEF')+': '+L('∠A ≅ ∠D')+'، '+L('AB = DE = 9')+'، '+L('m∠B = (3x + 10)°')+'، '+L('m∠E = (5x − 20)°')+'. ما قيمة x التي تجعل المثلثين متطابقين بـ ASA؟',
  o:[L('15'),L('55'),L('5'),L('10')],a:0,
  h:'لدينا زاوية وضلع؛ تنقص الزاوية الثانية عند طرف الضلع الآخر. ساوي قياسيهما.',
  e:'نحتاج '+L('∠B ≅ ∠E')+': '+L('3x + 10 = 5x − 20')+' ⇐ '+L('30 = 2x')+' ⇐ '+L('x = 15')+'، فيكون قياس كل زاوية '+L('55°')+'.',
- rem:{tip:'انتبهي: السؤال يطلب x لا قياس الزاوية؛ عوّضي للتحقق فقط.',
+ rem:{fix:{"q": "إذا كان <span class=\"ltr\">∠A ≅ ∠D</span>، و <span class=\"ltr\">m∠A = (2x + 5)°</span>، و <span class=\"ltr\">m∠D = 45°</span>، فما قيمة <span class=\"ltr\">x</span>؟", "o": ["25", "20", "40"], "a": 1, "e": "<span class=\"ltr\">2x + 5 = 45 ⇐ 2x = 40 ⇐ x = 20</span>."},tip:'انتبهي: السؤال يطلب x لا قياس الزاوية؛ عوّضي للتحقق فقط.',
   info:'الزاويتان المتطابقتان متساويتان في القياس. لحل '+L('3x + 10 = 5x − 20')+': اطرحي '+L('3x')+' ثم أضيفي '+L('20')+': '+L('2x = 30')+'.',
   sim:{q:'إذا كان '+L('m∠P = (2x + 15)°')+' و '+L('m∠X = (4x − 5)°')+' زاويتين متطابقتين، فما x؟',o:[L('10'),L('35'),L('5')],a:0,e:L('2x + 15 = 4x − 5')+' ⇐ '+L('2x = 20')+' ⇐ '+L('x = 10')+'.'}}}
 ];
@@ -296,11 +304,11 @@ function finish(auto,restored){
   if(!ok&&q.rem){var r=q.rem,sm=r.sim;
    h+='<div class="rmb"><button class="rbt" data-p="tip">💡 نصيحة</button><button class="rbt" data-p="info">📘 معلومة علاجية</button><button class="rbt" data-p="sim">✏️ سؤال مشابه</button></div>'+
    '<div class="rpn" data-k="tip"><b>💡 نصيحة في هذه المهارة</b>'+r.tip+'</div>'+
-   '<div class="rpn" data-k="info"><b>📘 معلومة علاجية</b>'+r.info+'</div>'+
+   '<div class="rpn" data-k="info"><b>📘 معلومة علاجية</b>'+r.info+(r.fix?'<div class="fq"><b class="fqh">🩹 سؤال علاجي — طبّقي المعلومة</b><p class="sq">'+r.fix.q+'</p><div class="sos" data-a="'+r.fix.a+'">'+r.fix.o.map(function(o,j){return '<button class="so" data-j="'+j+'">'+"أبجد"[j]+") "+o+"</button>"}).join("")+'</div><div class="sfb"></div><div class="sex">'+r.fix.e+'</div></div>':'')+'</div>'+
    '<div class="rpn" data-k="sim"><b>✏️ سؤال مشابه — جرّبي الآن</b><p class="sq">'+sm.q+'</p><div class="sos" data-a="'+sm.a+'">'+sm.o.map(function(o,j){return '<button class="so" data-j="'+j+'">'+"أبجد"[j]+") "+o+"</button>"}).join("")+'</div><div class="sfb"></div><div class="sex">'+sm.e+'</div></div>';}
   h+="</div>";
  });
- $("rv").innerHTML=h;var nw=Q.filter(function(q,i){return ans[i]!==q.a}).length;$("rh").textContent=nw?"لكل سؤال أخطأتِ فيه ثلاثة أزرار للمعالجة: نصيحة، ومعلومة علاجية، وسؤال مشابه تتدربين عليه 👇":"";
+ $("rv").innerHTML=h;var nw=Q.filter(function(q,i){return ans[i]!==q.a}).length;$("rh").textContent=nw?"لكل سؤال أخطأتِ فيه ثلاثة أزرار للمعالجة: نصيحة، ومعلومة علاجية مع سؤال علاجي، وسؤال مشابه تتدربين عليه 👇":"";
  $("sc").textContent=sc+" / "+N;
  $("who").textContent=($("nm").value||"")+($("cl").value?" — الفصل "+$("cl").value:"");
  $("lv").textContent=sc==N?"ممتازة! إتقان تام 🌟":sc>=N*0.8?"مستوى جيد جدًا":sc>=N*0.6?"مستوى جيد، راجعي الأسئلة الخاطئة":"تحتاجين إلى مراجعة حالات التطابق الأربع";

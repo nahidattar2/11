@@ -70,6 +70,14 @@ button:disabled{opacity:.4;cursor:default}
 .so{text-align:right;font:inherit;padding:9px 12px;border-radius:10px;border:2px solid var(--bd);background:#fff;color:var(--tx);cursor:pointer}
 .so.ok{border-color:var(--ok);background:var(--okb);font-weight:800}.so.no{border-color:var(--bad);background:var(--badb);opacity:.7}
 .sfb{font-weight:800;margin-top:8px}.sfb.good{color:var(--ok)}.sfb.bad{color:var(--bad)}.sex{display:none;margin-top:6px;color:var(--tx)}
+
+/* dark-mode fix for remediation panels */
+.rpn{color:var(--tx)}
+.rpn .sq,.rpn .sex{color:inherit}
+.so{background:var(--card)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .rpn[data-k="tip"]{background:#3a3016}:root:not([data-theme="light"]) .rpn[data-k="info"]{background:#16352a}:root:not([data-theme="light"]) .rpn[data-k="sim"]{background:#2c2344}}
+:root[data-theme="dark"] .rpn[data-k="tip"]{background:#3a3016}:root[data-theme="dark"] .rpn[data-k="info"]{background:#16352a}:root[data-theme="dark"] .rpn[data-k="sim"]{background:#2c2344}
+.fq{margin-top:10px;padding-top:10px;border-top:1.5px dashed currentColor;border-top-color:rgba(27,138,75,.45)}.fq .fqh{color:var(--ok)}
 </style>
 </head>
 <body>
@@ -140,49 +148,49 @@ var Q=[
  o:['مسلّمة التطابق SSS','مسلّمة التطابق SAS','لا يمكن إثبات التطابق','تطابق الزوايا الثلاث'],a:0,
  h:'عدّي العلامات: كم زوجًا من الأضلاع المتطابقة؟ وهل لدينا معلومات عن الزوايا؟',
  e:'العلامات تبيّن تطابق الأضلاع الثلاثة المتناظرة: '+L(OV('AB')+' ≅ '+OV('DE')+'، '+OV('BC')+' ≅ '+OV('EF')+'، '+OV('CA')+' ≅ '+OV('FD'))+'، فالمثلثان متطابقان بـ SSS.',
- rem:{tip:'ابدئي دائمًا بعدّ العلامات على الأضلاع والزوايا قبل اختيار المسلّمة.',
+ rem:{fix:{"q": "كم ضلعًا متطابقًا تحتاجين لإثبات التطابق بـ SSS؟", "o": ["ضلعين", "ثلاثة أضلاع", "ضلعًا واحدًا وزاويتين"], "a": 1, "e": "SSS: ثلاثة أضلاع في مثلث تطابق ثلاثة أضلاع في المثلث الآخر."},tip:'ابدئي دائمًا بعدّ العلامات على الأضلاع والزوايا قبل اختيار المسلّمة.',
   info:'SSS (ضلع، ضلع، ضلع): إذا طابقت <b>ثلاثة أضلاع</b> في مثلث ثلاثة أضلاع في مثلث آخر فالمثلثان متطابقان، ولا نحتاج أي زاوية.',
   sim:{q:'في '+L('△PQR')+' و '+L('△XYZ')+': '+L('PQ = XY = 5')+'، '+L('QR = YZ = 7')+'، '+L('PR = XZ = 9')+'. ما المسلّمة التي تثبت التطابق؟',o:['SSS','SAS','لا يمكن الإثبات'],a:0,e:'الأضلاع الثلاثة المتناظرة متساوية ⇐ SSS.'}}},
 {t:"m",tg:"SSS + الضلع المشترك",q:'في الشكل، '+L(OV('AB')+' ≅ '+OV('AD'))+' و '+L(OV('BC')+' ≅ '+OV('DC'))+'. ما الذي يثبت أن '+L('△ABC ≅ △ADC')+'؟',f:F2,
  o:['SSS؛ لأن '+L(OV('AC'))+' ضلع مشترك يطابق نفسه','SAS؛ لأن '+L('∠A')+' مشتركة','لا يمكن؛ نعرف ضلعين فقط','SSS؛ لأن '+L(OV('BD')+' ≅ '+OV('AC'))],a:0,
  h:'هل يوجد ضلع ثالث لم تُكتب عليه علامة لكنه موجود في المثلثين معًا؟',
  e:L(OV('AC'))+' ضلع مشترك، و '+L(OV('AC')+' ≅ '+OV('AC'))+' بخاصية الانعكاس. مع الضلعين المعطيين تصبح الأضلاع الثلاثة متطابقة ⇐ SSS.',
- rem:{tip:'ابحثي دائمًا عن الضلع المشترك بين المثلثين؛ إنه «ضلع مجاني» يُبرَّر بخاصية الانعكاس.',
+ rem:{fix:{"q": "المثلثان <span class=\"ltr\">△ABD</span> و <span class=\"ltr\">△CBD</span> يشتركان في الضلع <span class=\"ltr\"><span style=\"text-decoration:overline\">BD</span></span>. ما الخاصية التي تبرر <span class=\"ltr\"><span style=\"text-decoration:overline\">BD</span> ≅ <span style=\"text-decoration:overline\">BD</span></span>؟", "o": ["خاصية التماثل", "خاصية الانعكاس", "خاصية التعدي"], "a": 1, "e": "كل قطعة تطابق نفسها: خاصية الانعكاس."},tip:'ابحثي دائمًا عن الضلع المشترك بين المثلثين؛ إنه «ضلع مجاني» يُبرَّر بخاصية الانعكاس.',
   info:'خاصية الانعكاس: كل قطعة تطابق نفسها '+L(OV('AC')+' ≅ '+OV('AC'))+'. تُستعمل عندما يشترك مثلثان في ضلع واحد.',
   sim:{q:'مثلثان '+L('△KLM')+' و '+L('△KNM')+' يشتركان في '+L(OV('KM'))+'، و '+L(OV('KL')+' ≅ '+OV('KN'))+' و '+L(OV('LM')+' ≅ '+OV('NM'))+'. ما مبرر '+L(OV('KM')+' ≅ '+OV('KM'))+'؟',o:['خاصية الانعكاس','خاصية التماثل','خاصية التعدي'],a:0,e:'القطعة تطابق نفسها ⇐ خاصية الانعكاس، ثم يتطابق المثلثان بـ SSS.'}}},
 {t:"m",tg:"الزاوية المحصورة",q:'في '+L('△PQR')+'، ما الزاوية المحصورة بين الضلعين '+L(OV('PQ'))+' و '+L(OV('QR'))+'؟',
  o:[L('∠P'),L('∠Q'),L('∠R'),'لا توجد زاوية محصورة'],a:1,
  h:'الزاوية المحصورة رأسها هو الحرف المشترك بين الضلعين.',
  e:'الحرف المشترك بين '+L('PQ')+' و '+L('QR')+' هو '+L('Q')+'، فالزاوية المحصورة '+L('∠Q')+'.',
- rem:{tip:'اكتبي اسمي الضلعين، وضعي دائرة حول الحرف المتكرر: هو رأس الزاوية المحصورة.',
+ rem:{fix:{"q": "في <span class=\"ltr\">△XYZ</span>، ما الزاوية المحصورة بين الضلعين <span class=\"ltr\"><span style=\"text-decoration:overline\">XY</span></span> و <span class=\"ltr\"><span style=\"text-decoration:overline\">YZ</span></span>؟", "o": ["<span class=\"ltr\">∠X</span>", "<span class=\"ltr\">∠Y</span>", "<span class=\"ltr\">∠Z</span>"], "a": 1, "e": "الحرف المشترك بين <span class=\"ltr\">XY</span> و <span class=\"ltr\">YZ</span> هو Y، فهو رأس الزاوية المحصورة."},tip:'اكتبي اسمي الضلعين، وضعي دائرة حول الحرف المتكرر: هو رأس الزاوية المحصورة.',
   info:'الزاوية المحصورة: الزاوية التي يكوّنها ضلعان متجاوران، ورأسها نقطة التقاء الضلعين.',
   sim:{q:'في '+L('△XYZ')+'، ما الزاوية المحصورة بين '+L(OV('XZ'))+' و '+L(OV('ZY'))+'؟',o:[L('∠X'),L('∠Y'),L('∠Z')],a:2,e:'الحرف المشترك '+L('Z')+' ⇐ '+L('∠Z')+'.'}}},
 {t:"h",tg:"SAS + زاويتان متقابلتان",q:'في الشكل، '+L('X')+' منتصف '+L(OV('AC'))+' و '+L(OV('BD'))+'. أيّ العبارات الآتية تبرر أن '+L('△AXB ≅ △CXD')+'؟',f:F4,
  o:['SAS؛ لأن '+L('∠AXB ≅ ∠CXD')+' متقابلتان بالرأس','SSS؛ لأن الأضلاع الثلاثة معطاة','SAS؛ لأن '+L('∠A ≅ ∠C'),'لا يمكن الإثبات'],a:0,
  h:'المنتصف يعطيك ضلعين متطابقين. ما العلاقة بين الزاويتين عند X؟',
  e:L(OV('AX')+' ≅ '+OV('XC'))+' و '+L(OV('BX')+' ≅ '+OV('XD'))+' (تعريف المنتصف)، و '+L('∠AXB ≅ ∠CXD')+' (متقابلتان بالرأس) وهي محصورة بين الضلعين ⇐ SAS.',
- rem:{tip:'عندما يتقاطع مستقيمان في نقطة بين المثلثين، تذكّري الزاويتين المتقابلتين بالرأس: «زاوية مجانية».',
+ rem:{fix:{"q": "المستقيمان <span class=\"ltr\"><span style=\"text-decoration:overline\">PR</span></span> و <span class=\"ltr\"><span style=\"text-decoration:overline\">QS</span></span> يتقاطعان في M. ما العلاقة بين <span class=\"ltr\">∠PMQ</span> و <span class=\"ltr\">∠RMS</span>؟", "o": ["متطابقتان؛ متقابلتان بالرأس", "متكاملتان", "متتامتان"], "a": 0, "e": "الزاويتان المتقابلتان بالرأس متطابقتان دائمًا."},tip:'عندما يتقاطع مستقيمان في نقطة بين المثلثين، تذكّري الزاويتين المتقابلتين بالرأس: «زاوية مجانية».',
   info:'الزاويتان المتقابلتان بالرأس متطابقتان دائمًا، ومنتصف القطعة يقسمها إلى قطعتين متطابقتين.',
   sim:{q:'مستقيمان يتقاطعان في '+L('M')+'، و '+L('M')+' منتصف '+L(OV('PR'))+' و '+L(OV('QS'))+'. ما المسلّمة التي تثبت '+L('△PMQ ≅ △RMS')+'؟',o:['SAS','SSS','لا يمكن الإثبات'],a:0,e:'ضلعان من المنتصف + زاويتان متقابلتان بالرأس محصورتان ⇐ SAS.'}}},
 {t:"h",tg:"SSS في المستوى الإحداثي",q:'رؤوس '+L('△ABC')+': '+L('A(0, 0), B(4, 0), C(1, 3)')+'، ورؤوس '+L('△DEF')+': '+L('D(2, −1), E(6, −1), F(3, 2)')+'. أيّ العبارات الآتية صحيحة؟',
  o:['متطابقان بـ SSS؛ لأن أطوال الأضلاع المتناظرة متساوية','غير متطابقين؛ لأن موقعهما مختلف','غير متطابقين؛ لأن '+L('DE ≠ AB'),'لا يمكن الحكم دون قياس الزوايا'],a:0,
  h:'استعملي صيغة المسافة لكل ضلع: '+L('√((x₂−x₁)² + (y₂−y₁)²)')+'.',
  e:L('AB = DE = 4')+'، '+L('BC = EF = √18')+'، '+L('AC = DF = √10')+'. الأضلاع المتناظرة متساوية ⇐ متطابقان بـ SSS (المثلث الثاني إزاحة للأول).',
- rem:{tip:'في المستوى الإحداثي: احسبي أطوال الأضلاع الستة بصيغة المسافة، ثم قارني كل ضلع بنظيره.',
+ rem:{fix:{"q": "ما المسافة بين النقطتين <span class=\"ltr\">(0, 0)</span> و <span class=\"ltr\">(3, 4)</span>؟", "o": ["7", "5", "25"], "a": 1, "e": "<span class=\"ltr\">√(3² + 4²) = √25 = 5</span>."},tip:'في المستوى الإحداثي: احسبي أطوال الأضلاع الستة بصيغة المسافة، ثم قارني كل ضلع بنظيره.',
   info:'صيغة المسافة: '+L('d = √((x₂−x₁)² + (y₂−y₁)²)')+'. إذا تساوت الأطوال الثلاثة المتناظرة فالمثلثان متطابقان بـ SSS، مهما اختلف الموقع.',
   sim:{q:'ما طول القطعة بين '+L('(1, 2)')+' و '+L('(4, 6)')+'؟',o:[L('5'),L('7'),L('√7')],a:0,e:L('√(3² + 4²) = √25 = 5')+'.'}}},
 {t:"h",tg:"تحليل خطأ",q:'قالت سارة: «'+L('△ABC ≅ △DEF')+' بـ SAS؛ لأن '+L(OV('AB')+' ≅ '+OV('DE'))+' و '+L(OV('BC')+' ≅ '+OV('EF'))+' و '+L('∠A ≅ ∠D')+'». ما تقييمك؟',
  o:['صحيح؛ لأن لدينا ضلعين وزاوية','خطأ؛ لأن '+L('∠A')+' ليست محصورة بين '+L(OV('AB'))+' و '+L(OV('BC')),'خطأ؛ لأن SAS تحتاج ثلاثة أضلاع','صحيح؛ لأن أي زاوية تكفي مع ضلعين'],a:1,
  h:'ما رأس الزاوية المحصورة بين '+L(OV('AB'))+' و '+L(OV('BC'))+'؟',
  e:'الزاوية المحصورة بين '+L(OV('AB'))+' و '+L(OV('BC'))+' هي '+L('∠B')+' لا '+L('∠A')+'. ضلعان وزاوية غير محصورة (SSA) لا تثبت التطابق.',
- rem:{tip:'في SAS لا يكفي «ضلعان وزاوية»؛ يجب أن تكون الزاوية بين الضلعين تمامًا.',
+ rem:{fix:{"q": "معطى: <span class=\"ltr\"><span style=\"text-decoration:overline\">AB</span> ≅ <span style=\"text-decoration:overline\">DE</span></span>، <span class=\"ltr\">∠B ≅ ∠E</span>، <span class=\"ltr\"><span style=\"text-decoration:overline\">BC</span> ≅ <span style=\"text-decoration:overline\">EF</span></span>. هل الزاوية محصورة بين الضلعين؟", "o": ["نعم، فالحالة SAS", "لا، فهي SSA", "لا يمكن الحكم"], "a": 0, "e": "الحرف B مشترك بين <span class=\"ltr\">AB</span> و <span class=\"ltr\">BC</span>، فـ <span class=\"ltr\">∠B</span> محصورة ⇐ SAS."},tip:'في SAS لا يكفي «ضلعان وزاوية»؛ يجب أن تكون الزاوية بين الضلعين تمامًا.',
   info:'الترتيب مهم: S-A-S يعني ضلع ثم الزاوية التي بينه وبين الضلع التالي ثم الضلع. أما SSA فليست طريقة إثبات.',
   sim:{q:'معطى: '+L(OV('PQ')+' ≅ '+OV('XY'))+'، '+L('∠Q ≅ ∠Y')+'، '+L(OV('QR')+' ≅ '+OV('YZ'))+'. هل يتطابق '+L('△PQR')+' و '+L('△XYZ')+' بـ SAS؟',o:['نعم','لا'],a:0,e:L('∠Q')+' محصورة بين '+L(OV('PQ'))+' و '+L(OV('QR'))+' ⇐ نعم بـ SAS.'}}},
 {t:"h",tg:"SAS وحل معادلة",q:'في '+L('△ABC')+' و '+L('△DEF')+': '+L('AB = DE = 7')+'، و '+L('∠B ≅ ∠E')+'، و '+L('BC = 2x + 3')+'، و '+L('EF = x + 8')+'. ما قيمة x التي تجعل المثلثين متطابقين بـ SAS؟',
  o:[L('3'),L('5'),L('11'),L('13')],a:1,
  h:'لدينا ضلع وزاوية محصورة؛ ينقص ضلع واحد متطابق. اكتبي معادلة له.',
  e:'نحتاج '+L('BC = EF')+': '+L('2x + 3 = x + 8')+' ⇐ '+L('x = 5')+'، فيكون الضلع '+L('13')+' في المثلثين.',
- rem:{tip:'حدّدي الضلع الناقص لإكمال المسلّمة، ثم ساوي طوليه بمعادلة.',
+ rem:{fix:{"q": "حلّي المعادلة: <span class=\"ltr\">3x + 2 = x + 10</span>", "o": ["<span class=\"ltr\">x = 4</span>", "<span class=\"ltr\">x = 6</span>", "<span class=\"ltr\">x = 3</span>"], "a": 0, "e": "اطرحي x: <span class=\"ltr\">2x + 2 = 10</span>، ثم اطرحي 2: <span class=\"ltr\">2x = 8</span>، إذن <span class=\"ltr\">x = 4</span>."},tip:'حدّدي الضلع الناقص لإكمال المسلّمة، ثم ساوي طوليه بمعادلة.',
   info:'لحل '+L('2x + 3 = x + 8')+': اطرحي '+L('x')+' من الطرفين ثم اطرحي '+L('3')+'. وتحققي بالتعويض: '+L('2(5) + 3 = 13 = 5 + 8')+' ✓.',
   sim:{q:'إذا كان '+L('PQ = 3x − 4')+' و '+L('XY = x + 6')+' ضلعين متناظرين متطابقين، فما x؟',o:[L('5'),L('1'),L('10')],a:0,e:L('3x − 4 = x + 6')+' ⇐ '+L('2x = 10')+' ⇐ '+L('x = 5')+'.'}}}
 ];
@@ -281,11 +289,11 @@ function finish(auto,restored){
   if(!ok&&q.rem){var r=q.rem,sm=r.sim;
    h+='<div class="rmb"><button class="rbt" data-p="tip">💡 نصيحة</button><button class="rbt" data-p="info">📘 معلومة علاجية</button><button class="rbt" data-p="sim">✏️ سؤال مشابه</button></div>'+
    '<div class="rpn" data-k="tip"><b>💡 نصيحة في هذه المهارة</b>'+r.tip+'</div>'+
-   '<div class="rpn" data-k="info"><b>📘 معلومة علاجية</b>'+r.info+'</div>'+
+   '<div class="rpn" data-k="info"><b>📘 معلومة علاجية</b>'+r.info+(r.fix?'<div class="fq"><b class="fqh">🩹 سؤال علاجي — طبّقي المعلومة</b><p class="sq">'+r.fix.q+'</p><div class="sos" data-a="'+r.fix.a+'">'+r.fix.o.map(function(o,j){return '<button class="so" data-j="'+j+'">'+"أبجد"[j]+") "+o+"</button>"}).join("")+'</div><div class="sfb"></div><div class="sex">'+r.fix.e+'</div></div>':'')+'</div>'+
    '<div class="rpn" data-k="sim"><b>✏️ سؤال مشابه — جرّبي الآن</b><p class="sq">'+sm.q+'</p><div class="sos" data-a="'+sm.a+'">'+sm.o.map(function(o,j){return '<button class="so" data-j="'+j+'">'+"أبجد"[j]+") "+o+"</button>"}).join("")+'</div><div class="sfb"></div><div class="sex">'+sm.e+'</div></div>';}
   h+="</div>";
  });
- $("rv").innerHTML=h;var nw=Q.filter(function(q,i){return ans[i]!==q.a}).length;$("rh").textContent=nw?"لكل سؤال أخطأتِ فيه ثلاثة أزرار للمعالجة: نصيحة، ومعلومة علاجية، وسؤال مشابه تتدربين عليه 👇":"";
+ $("rv").innerHTML=h;var nw=Q.filter(function(q,i){return ans[i]!==q.a}).length;$("rh").textContent=nw?"لكل سؤال أخطأتِ فيه ثلاثة أزرار للمعالجة: نصيحة، ومعلومة علاجية مع سؤال علاجي، وسؤال مشابه تتدربين عليه 👇":"";
  $("sc").textContent=sc+" / "+N;
  $("who").textContent=($("nm").value||"")+($("cl").value?" — الفصل "+$("cl").value:"");
  $("lv").textContent=sc==N?"ممتازة! إتقان تام 🌟":sc>=N*0.8?"مستوى جيد جدًا":sc>=N*0.6?"مستوى جيد، راجعي الأسئلة الخاطئة":"تحتاجين إلى مراجعة الدرس 3-4";

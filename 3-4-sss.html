@@ -70,6 +70,14 @@ button:disabled{opacity:.4;cursor:default}
 .so{text-align:right;font:inherit;padding:9px 12px;border-radius:10px;border:2px solid var(--bd);background:#fff;color:var(--tx);cursor:pointer}
 .so.ok{border-color:var(--ok);background:var(--okb);font-weight:800}.so.no{border-color:var(--bad);background:var(--badb);opacity:.7}
 .sfb{font-weight:800;margin-top:8px}.sfb.good{color:var(--ok)}.sfb.bad{color:var(--bad)}.sex{display:none;margin-top:6px;color:var(--tx)}
+
+/* dark-mode fix for remediation panels */
+.rpn{color:var(--tx)}
+.rpn .sq,.rpn .sex{color:inherit}
+.so{background:var(--card)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .rpn[data-k="tip"]{background:#3a3016}:root:not([data-theme="light"]) .rpn[data-k="info"]{background:#16352a}:root:not([data-theme="light"]) .rpn[data-k="sim"]{background:#2c2344}}
+:root[data-theme="dark"] .rpn[data-k="tip"]{background:#3a3016}:root[data-theme="dark"] .rpn[data-k="info"]{background:#16352a}:root[data-theme="dark"] .rpn[data-k="sim"]{background:#2c2344}
+.fq{margin-top:10px;padding-top:10px;border-top:1.5px dashed currentColor;border-top-color:rgba(27,138,75,.45)}.fq .fqh{color:var(--ok)}
 </style>
 </head>
 <body>
@@ -133,31 +141,31 @@ var Q=[
  o:[L(OV('PR')+' ≅ '+OV('SU')),L('∠Q ≅ ∠T'),L(OV('PR')+' ≅ '+OV('TU')),L('∠P ≅ ∠S')],a:0,
  h:'SSS تحتاج ثلاثة أضلاع متناظرة؛ ما الضلع الثالث في كل مثلث؟',
  e:'لدينا ضلعان، ونحتاج الضلع الثالث المناظر: '+L('PR')+' يناظر '+L('SU')+' حسب ترتيب الرؤوس. أما الزاوية '+L('∠Q ≅ ∠T')+' فتثبت التطابق بـ SAS لا SSS.',
- rem:{tip:'اكتبي الرؤوس فوق بعضها '+L('P Q R / S T U')+' لتعرفي أي ضلع يناظر الآخر.',info:'SSS: ثلاثة أضلاع فقط، ولا مكان للزوايا فيها. والضلع المناظر يُحدد من ترتيب الرؤوس في عبارة التطابق.',
+ rem:{fix:{"q": "ما الذي تشترطه حالة SSS لتطابق مثلثين؟", "o": ["ضلعان وزاوية", "ثلاثة أضلاع متطابقة مع نظائرها", "ثلاث زوايا متطابقة"], "a": 1, "e": "SSS = ضلع، ضلع، ضلع، ولا تحتاج أي زاوية."},tip:'اكتبي الرؤوس فوق بعضها '+L('P Q R / S T U')+' لتعرفي أي ضلع يناظر الآخر.',info:'SSS: ثلاثة أضلاع فقط، ولا مكان للزوايا فيها. والضلع المناظر يُحدد من ترتيب الرؤوس في عبارة التطابق.',
   sim:{q:'معطى '+L(OV('AB')+' ≅ '+OV('XY'))+' و '+L(OV('AC')+' ≅ '+OV('XZ'))+'. ما الضلع الناقص لإثبات '+L('△ABC ≅ △XYZ')+' بـ SSS؟',o:[L(OV('BC')+' ≅ '+OV('YZ')),L(OV('BC')+' ≅ '+OV('XZ')),L('∠A ≅ ∠X')],a:0,e:L('BC')+' يناظر '+L('YZ')+'.'}}},
 {t:"m",tg:"SSS مع ضلع مشترك",q:'في الشكل، '+L(OV('AB')+' ≅ '+OV('AC'))+'، و '+L('M')+' منتصف '+L(OV('BC'))+'. ما الأزواج الثلاثة التي تثبت '+L('△ABM ≅ △ACM')+' بـ SSS؟',f:F2,
  o:[L(OV('AB')+' ≅ '+OV('AC'))+'، '+L(OV('BM')+' ≅ '+OV('CM'))+'، '+L(OV('AM')+' ≅ '+OV('AM')),L(OV('AB')+' ≅ '+OV('AC'))+'، '+L('∠B ≅ ∠C')+'، '+L(OV('AM')+' ≅ '+OV('AM')),L(OV('AB')+' ≅ '+OV('BC'))+'، '+L(OV('BM')+' ≅ '+OV('CM'))+'، '+L(OV('AM')+' ≅ '+OV('AM')),L(OV('BM')+' ≅ '+OV('CM'))+'، '+L(OV('AM')+' ≅ '+OV('BC'))+'، '+L(OV('AB')+' ≅ '+OV('AC'))],a:0,
  h:'المنتصف يعطي ضلعين، والقطعة '+L('AM')+' مشتركة بين المثلثين.',
  e:L(OV('AB')+' ≅ '+OV('AC'))+' (معطى)، و '+L(OV('BM')+' ≅ '+OV('CM'))+' (تعريف المنتصف)، و '+L(OV('AM')+' ≅ '+OV('AM'))+' (الانعكاس) ⇐ SSS.',
- rem:{tip:'في SSS اكتبي ثلاثة أضلاع فقط؛ أي خيار فيه زاوية ليس SSS.',info:'المنتصف يقسم القطعة إلى قطعتين متطابقتين، والضلع المشترك يطابق نفسه بخاصية الانعكاس.',
+ rem:{fix:{"q": "إذا كانت M منتصف <span class=\"ltr\"><span style=\"text-decoration:overline\">BC</span></span>، فأيّ العبارات صحيحة؟", "o": ["<span class=\"ltr\"><span style=\"text-decoration:overline\">BM</span> ≅ <span style=\"text-decoration:overline\">CM</span></span>", "<span class=\"ltr\"><span style=\"text-decoration:overline\">BM</span> ≅ <span style=\"text-decoration:overline\">BC</span></span>", "<span class=\"ltr\"><span style=\"text-decoration:overline\">AM</span> ≅ <span style=\"text-decoration:overline\">BC</span></span>"], "a": 0, "e": "المنتصف يقسم القطعة إلى قطعتين متطابقتين: <span class=\"ltr\"><span style=\"text-decoration:overline\">BM</span> ≅ <span style=\"text-decoration:overline\">CM</span></span>."},tip:'في SSS اكتبي ثلاثة أضلاع فقط؛ أي خيار فيه زاوية ليس SSS.',info:'المنتصف يقسم القطعة إلى قطعتين متطابقتين، والضلع المشترك يطابق نفسه بخاصية الانعكاس.',
   sim:{q:'إذا كانت '+L('M')+' منتصف '+L(OV('BC'))+'، فما العلاقة بين '+L('BM')+' و '+L('MC')+'؟',o:[L(OV('BM')+' ≅ '+OV('MC')),L('BM = 2MC'),'لا علاقة بينهما'],a:0,e:'المنتصف يقسم القطعة إلى نصفين متطابقين.'}}},
 {t:"h",tg:"SSS في المستوى الإحداثي",q:'رؤوس '+L('△JKL')+': '+L('J(−3, 1), K(−1, 4), L(2, 1)')+'، ورؤوس '+L('△MNP')+': '+L('M(1, −2), N(3, 1), P(7, −2)')+'. هل المثلثان متطابقان؟',
  o:['نعم بـ SSS؛ لأن '+L('JK = MN'),'لا؛ لأن '+L('JL = 5')+' بينما '+L('MP = 6'),'نعم؛ لأن لهما الشكل نفسه تقريبًا','لا يمكن الحكم دون قياس الزوايا'],a:1,
  h:'احسبي أطوال الأضلاع الستة، وانتبهي: يكفي ضلع واحد مختلف لنفي التطابق.',
  e:L('JK = MN = √13')+'، لكن '+L('JL = 5')+' و '+L('MP = 6')+'، و '+L('KL = √18')+' بينما '+L('NP = 5')+'. الأضلاع غير متساوية ⇐ غير متطابقين.',
- rem:{tip:'لا تكتفي بضلع واحد متساوٍ؛ SSS تحتاج الأضلاع الثلاثة.',info:'الضلع الأفقي طوله فرق الإحداثيين السينيين مباشرة: '+L('JL = 2 − (−3) = 5')+'، و '+L('MP = 7 − 1 = 6')+'.',
+ rem:{fix:{"q": "ما طول القطعة الأفقية من <span class=\"ltr\">(−2, 3)</span> إلى <span class=\"ltr\">(4, 3)</span>؟", "o": ["2", "6", "4"], "a": 1, "e": "<span class=\"ltr\">4 − (−2) = 4 + 2 = 6</span>."},tip:'لا تكتفي بضلع واحد متساوٍ؛ SSS تحتاج الأضلاع الثلاثة.',info:'الضلع الأفقي طوله فرق الإحداثيين السينيين مباشرة: '+L('JL = 2 − (−3) = 5')+'، و '+L('MP = 7 − 1 = 6')+'.',
   sim:{q:'ما طول القطعة بين '+L('(−2, 3)')+' و '+L('(4, 3)')+'؟',o:[L('6'),L('2'),L('√6')],a:0,e:'القطعة أفقية: '+L('4 − (−2) = 6')+'.'}}},
 {t:"h",tg:"SSS وحل معادلات",q:L('△ABC ≅ △DEF')+' بـ SSS، حيث '+L('AB = x + 4')+'، '+L('DE = 2x − 1')+'، '+L('BC = 3y')+'، '+L('EF = y + 8')+'، '+L('AC = DF = 10')+'. ما محيط '+L('△ABC')+'؟',
  o:[L('27'),L('29'),L('31'),L('35')],a:2,
  h:'كوّني معادلتين من الضلعين المتناظرين، ثم احسبي الأطوال واجمعيها.',
  e:L('x + 4 = 2x − 1')+' ⇐ '+L('x = 5')+' ⇐ '+L('AB = 9')+'. و '+L('3y = y + 8')+' ⇐ '+L('y = 4')+' ⇐ '+L('BC = 12')+'. المحيط '+L('9 + 12 + 10 = 31')+'.',
- rem:{tip:'بعد إيجاد x و y عوّضي لتحصلي على الأطوال؛ السؤال يطلب المحيط لا قيم المتغيرات.',info:'المحيط = مجموع أطوال الأضلاع الثلاثة. والأضلاع المتناظرة في المثلثات المتطابقة متساوية.',
+ rem:{fix:{"q": "إذا كان <span class=\"ltr\">△ABC ≅ △DEF</span> و <span class=\"ltr\">AB = 7</span>، و <span class=\"ltr\">BC = 9</span>، و <span class=\"ltr\">AC = 10</span>، فما محيط <span class=\"ltr\">△DEF</span>؟", "o": ["26", "19", "17"], "a": 0, "e": "الأضلاع المتناظرة متساوية، فالمحيط نفسه: <span class=\"ltr\">7 + 9 + 10 = 26</span>."},tip:'بعد إيجاد x و y عوّضي لتحصلي على الأطوال؛ السؤال يطلب المحيط لا قيم المتغيرات.',info:'المحيط = مجموع أطوال الأضلاع الثلاثة. والأضلاع المتناظرة في المثلثات المتطابقة متساوية.',
   sim:{q:'إذا كان '+L('PQ = 2x + 1')+' و '+L('ST = x + 6')+' متناظرين في مثلثين متطابقين، فما طول '+L('PQ')+'؟',o:[L('11'),L('5'),L('6')],a:0,e:L('2x + 1 = x + 6')+' ⇐ '+L('x = 5')+' ⇐ '+L('PQ = 11')+'.'}}},
 {t:"h",tg:"دائمًا / أحيانًا / أبدًا",q:'«إذا كان لمثلثين المحيط نفسه، فإنهما متطابقان». هذه العبارة صحيحة:',
  o:['دائمًا','أحيانًا','أبدًا','فقط إذا كانا قائمي الزاوية'],a:1,
  h:'جرّبي مثلثين محيط كل منهما '+L('12')+' بأطوال مختلفة.',
  e:'أحيانًا: '+L('3, 4, 5')+' و '+L('4, 4, 4')+' محيط كل منهما '+L('12')+' وغير متطابقين. أما '+L('3, 4, 5')+' و '+L('5, 3, 4')+' فمتطابقان.',
- rem:{tip:'للحكم بـ «دائمًا» أو «أبدًا» ابحثي عن مثال مضاد واحد.',info:'تساوي المحيط يعني تساوي <b>مجموع</b> الأضلاع فقط، بينما SSS تشترط تساوي <b>كل</b> ضلع مع نظيره.',
+ rem:{fix:{"q": "مثلث أضلاعه 3، 4، 5 ومثلث أضلاعه 2، 5، 5. ماذا تلاحظين؟", "o": ["متطابقان لأن المحيط متساوٍ", "المحيط متساوٍ (12) لكنهما غير متطابقين", "غير متطابقين لأن المحيط مختلف"], "a": 1, "e": "المحيطان متساويان، لكن الأضلاع ليست متطابقة ضلعًا بضلع، فلا تتحقق SSS."},tip:'للحكم بـ «دائمًا» أو «أبدًا» ابحثي عن مثال مضاد واحد.',info:'تساوي المحيط يعني تساوي <b>مجموع</b> الأضلاع فقط، بينما SSS تشترط تساوي <b>كل</b> ضلع مع نظيره.',
   sim:{q:'مثلثان أضلاع الأول '+L('6, 8, 10')+' والثاني '+L('8, 10, 6')+'. هل هما متطابقان؟',o:['نعم بـ SSS','لا؛ لاختلاف ترتيب الأطوال','لا يمكن الحكم'],a:0,e:'الأطوال نفسها، والترتيب يتحدد بتسمية الرؤوس ⇐ متطابقان بـ SSS.'}}}
 ];
 var N=Q.length,T=420,MAXX=2;
@@ -255,11 +263,11 @@ function finish(auto,restored){
   if(!ok&&q.rem){var r=q.rem,sm=r.sim;
    h+='<div class="rmb"><button class="rbt" data-p="tip">💡 نصيحة</button><button class="rbt" data-p="info">📘 معلومة علاجية</button><button class="rbt" data-p="sim">✏️ سؤال مشابه</button></div>'+
    '<div class="rpn" data-k="tip"><b>💡 نصيحة في هذه المهارة</b>'+r.tip+'</div>'+
-   '<div class="rpn" data-k="info"><b>📘 معلومة علاجية</b>'+r.info+'</div>'+
+   '<div class="rpn" data-k="info"><b>📘 معلومة علاجية</b>'+r.info+(r.fix?'<div class="fq"><b class="fqh">🩹 سؤال علاجي — طبّقي المعلومة</b><p class="sq">'+r.fix.q+'</p><div class="sos" data-a="'+r.fix.a+'">'+r.fix.o.map(function(o,j){return '<button class="so" data-j="'+j+'">'+"أبجد"[j]+") "+o+"</button>"}).join("")+'</div><div class="sfb"></div><div class="sex">'+r.fix.e+'</div></div>':'')+'</div>'+
    '<div class="rpn" data-k="sim"><b>✏️ سؤال مشابه — جرّبي الآن</b><p class="sq">'+sm.q+'</p><div class="sos" data-a="'+sm.a+'">'+sm.o.map(function(o,j){return '<button class="so" data-j="'+j+'">'+"أبجد"[j]+") "+o+"</button>"}).join("")+'</div><div class="sfb"></div><div class="sex">'+sm.e+'</div></div>';}
   h+="</div>";
  });
- $("rv").innerHTML=h;var nw=Q.filter(function(q,i){return ans[i]!==q.a}).length;$("rh").textContent=nw?"لكل سؤال أخطأتِ فيه ثلاثة أزرار للمعالجة: نصيحة، ومعلومة علاجية، وسؤال مشابه تتدربين عليه 👇":"";
+ $("rv").innerHTML=h;var nw=Q.filter(function(q,i){return ans[i]!==q.a}).length;$("rh").textContent=nw?"لكل سؤال أخطأتِ فيه ثلاثة أزرار للمعالجة: نصيحة، ومعلومة علاجية مع سؤال علاجي، وسؤال مشابه تتدربين عليه 👇":"";
  $("sc").textContent=sc+" / "+N;
  $("who").textContent=($("nm").value||"")+($("cl").value?" — الفصل "+$("cl").value:"");
  $("lv").textContent=sc==N?"ممتازة! إتقان تام 🌟":sc>=N*0.8?"مستوى جيد جدًا":sc>=N*0.6?"مستوى جيد، راجعي الأسئلة الخاطئة":"تحتاجين إلى مراجعة الدرس 3-4";
