@@ -36,6 +36,12 @@ h1{text-align:center;font-size:40px;font-weight:900;color:#3a1c74;margin:10px 0 
 .lk button{font:inherit;font-size:22px;font-weight:bold;margin-top:14px;width:100%;border:0;border-radius:14px;padding:10px;color:#fff;background:linear-gradient(180deg,#9b74e6,#6440b4);cursor:pointer}
 .lk .er{color:#c2185b;font-weight:bold;min-height:1.6em;margin-top:6px}
 @media(max-width:820px){.rings,.lists{grid-template-columns:1fr}h1{font-size:30px}.ring{width:120px;height:120px}.rt b{font-size:28px}.tab{font-size:19px;padding:6px 18px}.st{font-size:18px}}
+.tbl{margin-top:20px;background:rgba(255,255,255,.88);border-radius:24px;padding:10px 14px;box-shadow:0 8px 24px rgba(110,70,190,.12)}
+table{width:100%;border-collapse:collapse}th{font-size:21px;color:#4a2a9c;padding:10px 8px;border-bottom:2px solid #e3d8f2;text-align:center}th.nmh{text-align:right}
+td{padding:9px 8px;border-bottom:1px solid #f0e9fa;font-size:21px;font-weight:bold}td.no{color:#8a78b8;text-align:center;width:46px}td.nm{white-space:nowrap}
+tr:nth-child(even) td{background:#fbf8ff}.pc{width:32%}.pb{display:flex;align-items:center;gap:10px}.pb .bar{flex:1;margin:0;height:18px}
+.pl{font-size:15px;border-radius:999px;padding:2px 10px;white-space:nowrap;min-width:78px;text-align:center}.l0{background:#ece3f8;color:#6a5a99}.l50{background:#fff1d6;color:#a86a12}.l100{background:#1f8a4c;color:#fff}
+@media(max-width:820px){td,th{font-size:16px}.pl{min-width:56px;font-size:12px}.pb{gap:5px}}
 </style></head><body>
 <div id="lock"><div class="lk"><div style="font-size:44px">🔒</div><h2>للمعلمة فقط — أدخلي الرقم السري</h2>
 <input id="pin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"><button onclick="unlock()">دخول</button><div class="er" id="er"></div></div></div>
@@ -54,7 +60,6 @@ const PIN="1448";                                   // الرقم السري —
 const GRADES_API="https://script.google.com/macros/s/AKfycby_HYmh-nMk9-EO3Q86QHOciMCGOry3h62pj-Zrhzy-qTym2UEthhksXF8u_-Si5X58KA/exec";
 const PLANS_API="https://script.google.com/macros/s/AKfycbzsP_TgAj852n0P5ocWo8rg08w5xNAkRzfRI90wo2dyhJKs-eWFqNWIQh3fhhBMtgZqwQ/exec"; // السكربت الشامل
 const PLANS_SS="1CwKsXEYO8UiZ6qSyYCxvBbxVitAUyeiHiEP4vylvJKw";  // جدول «متابعة الخطط العلاجية والإثرائية»
-const REM_BELOW=50, ENR_FROM=75;                     // المطلوب منها خطة علاجية: أقل من ٥٠٪ — إثرائية: ٧٥٪ فأكثر
 const CH={
   1:{t:"الفصل الأول: التبرير والبرهان",book:"التبرير والبرهان",quiz:null},
   2:{t:"الفصل الثاني: التوازي والتعامد",book:"التوازي والتعامد",quiz:"اختبار الفصل 2 - التوازي والتعامد",total:20}
@@ -99,25 +104,21 @@ function build(){
   DATA.plans.forEach(r=>{const nm=String(r["اسم الطالبة"]||"").trim(),c=clsNum(r["الفصل"]);if(!nm)return;
     let s=roster.find(x=>x.c===c&&same(x.n,nm));if(!s){s={n:nm,c,p:null};roster.push(s)}
     const type=String(r["الخطة"]).includes("إثرا")||String(r["الخطة"]).includes("اثرا")?"e":"r";
-    (s[type]=s[type]||[]).push({sk:r["المهارة"],ok:String(r["النتيجة"]).includes("أتقن")&&!String(r["النتيجة"]).includes("لم")})});
+    const res=String(r["النتيجة"]);(s[type]=s[type]||[]).push({sk:r["المهارة"],ok:(res.includes("أتقن")||res.includes("صحيح"))&&!res.includes("لم")&&!res.includes("خاطئ")})});
   const classes=["1","2","3"];
   document.getElementById("tabs").innerHTML=classes.map(c=>`<button class="tab ${c===CLS?"on":""}" onclick="CLS='${c}';build()">أولى ${AR(c)}</button>`).join("");
-  const L=roster.filter(s=>s.c===CLS);
-  const remT=L.filter(s=>(s.p!==null&&s.p<REM_BELOW)||s.r), enrT=L.filter(s=>(s.p!==null&&s.p>=ENR_FROM)||s.e);
-  const st=s=>{if(!s.r)return"none";const sk={};s.r.forEach(x=>{sk[x.sk]=sk[x.sk]||x.ok});return Object.values(sk).every(Boolean)?"done":"prog"};
-  const remDone=remT.filter(s=>st(s)==="done").length, enrDone=enrT.filter(s=>s.e).length;
+  const L=roster.filter(s=>s.c===CLS).sort((a,b)=>a.n.localeCompare(b.n,"ar"));
+  const lvl=a=>!a||!a.length?0:(a.some(x=>x.ok)?100:50);       // ١٠٠٪ = سؤال صحيح واحد على الأقل
+  const lbl={0:"لم تبدأ",50:"بدأت",100:"نفّذت ✓"};
+  const n=L.length, rD=L.filter(s=>lvl(s.r)===100).length, eD=L.filter(s=>lvl(s.e)===100).length;
   const ring=(p,col1,col2,sub)=>{const r=42,c=2*Math.PI*r,id="g"+col1.slice(1);return`<div class="ring"><svg viewBox="0 0 100 100"><defs><linearGradient id="${id}"><stop offset="0" stop-color="${col1}"/><stop offset="1" stop-color="${col2}"/></linearGradient></defs><circle cx="50" cy="50" r="${r}" fill="none" stroke="#ece5f6" stroke-width="11"/><circle cx="50" cy="50" r="${r}" fill="none" stroke="url(#${id})" stroke-width="11" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 50 50)"/></svg><div class="rt"><b>${AR(p)}٪</b><small>${sub}</small></div></div>`};
-  const pr=Math.round(remT.length?100*remDone/remT.length:0), pe=Math.round(enrT.length?100*enrDone/enrT.length:0);
+  const pr=n?Math.round(100*rD/n):0, pe=n?Math.round(100*eD/n):0;
   let h=`<div class="rings">
-   <div class="rc rem">${ring(pr,"#f0a7c9","#c2185b",`${AR(remDone)} من ${AR(remT.length)}`)}<div style="flex:1"><h2>🩺 الخطة العلاجية</h2><p>${remT.length?`نفّذتها وأتقنت ${AR(remDone)} من ${AR(remT.length)} طالبة`:"لا توجد طالبات مطلوب منهن خطة علاجية"}</p><div class="bar"><i style="width:${pr}%"></i></div></div></div>
-   <div class="rc enr">${ring(pe,"#b596f2","#4a2a9c",`${AR(enrDone)} من ${AR(enrT.length)}`)}<div style="flex:1"><h2>🚀 الخطة الإثرائية</h2><p>${enrT.length?`نفّذتها ${AR(enrDone)} من ${AR(enrT.length)} طالبة`:"لا توجد طالبات في الخطة الإثرائية"}</p><div class="bar"><i style="width:${pe}%"></i></div></div></div></div>`;
-  const tagR={done:"نفّذت الخطة ✓",prog:"قيد المعالجة",none:"لم تبدأ بعد"};
-  const order={prog:0,none:1,done:2};
-  h+=`<div class="lists"><div class="lst"><h3>🩺 طالبات الخطة العلاجية</h3>${remT.length?remT.sort((a,b)=>order[st(a)]-order[st(b)]).map(s=>{const k=st(s);
-      const sk=s.r?[...new Set(s.r.map(x=>x.sk))].map(x=>{const ok=s.r.some(y=>y.sk===x&&y.ok);return(ok?"✓ ":"… ")+x}).join(" · "):"";
-      return`<div class="st ${k}"><span class="nm">${esc(s.n)}${sk?`<span class="sk">${esc(sk)}</span>`:""}</span><span class="tg">${tagR[k]}</span></div>`}).join(""):'<div class="empty">—</div>'}</div>
-   <div class="lst"><h3>🚀 طالبات الخطة الإثرائية</h3>${enrT.length?enrT.sort((a,b)=>(b.e?1:0)-(a.e?1:0)).map(s=>`<div class="st ${s.e?"done":"none"}"><span class="nm">${esc(s.n)}</span><span class="tg">${s.e?"نفّذت الخطة ✓":"لم تبدأ بعد"}</span></div>`).join(""):'<div class="empty">—</div>'}</div></div>`;
+   <div class="rc rem">${ring(pr,"#f0a7c9","#c2185b",`${AR(rD)} من ${AR(n)}`)}<div style="flex:1"><h2>🩺 الخطة العلاجية</h2><p>نفّذتها ${AR(rD)} من ${AR(n)} طالبة</p><div class="bar"><i style="width:${pr}%"></i></div></div></div>
+   <div class="rc enr">${ring(pe,"#b596f2","#4a2a9c",`${AR(eD)} من ${AR(n)}`)}<div style="flex:1"><h2>🚀 الخطة الإثرائية</h2><p>نفّذتها ${AR(eD)} من ${AR(n)} طالبة</p><div class="bar"><i style="width:${pe}%"></i></div></div></div></div>`;
+  const cell=(a,cls)=>{const v=lvl(a);return`<td class="pc ${cls}"><div class="pb"><div class="bar"><i style="width:${v}%"></i></div><span class="pl l${v}">${lbl[v]}</span></div></td>`};
+  h+=`<div class="tbl"><table><tr><th>م</th><th class="nmh">اسم الطالبة</th><th>🩺 الخطة العلاجية</th><th>🚀 الخطة الإثرائية</th></tr>${n?L.map((s,i)=>`<tr><td class="no">${AR(i+1)}</td><td class="nm">${esc(s.n)}</td>${cell(s.r,"rem")}${cell(s.e,"enr")}</tr>`).join(""):'<tr><td colspan="4" class="empty">لا توجد أسماء لهذا الفصل بعد</td></tr>'}</table></div>`;
   document.getElementById("app").innerHTML=h;
-  document.getElementById("note").textContent=(C.quiz?`المطلوب منها خطة علاجية: أقل من ${AR(REM_BELOW)}٪ في اختبار الفصل، والإثرائية: ${AR(ENR_FROM)}٪ فأكثر — وتُضاف كل طالبة بدأت خطة من تلقاء نفسها.`:"لا يوجد اختبار لهذا الفصل في جدول الدرجات؛ تظهر الطالبات اللاتي بدأن الخطط.")+" تتحدث النتائج تلقائيًا من جدول المتابعة.";
+  document.getElementById("note").textContent="يكتمل الشريط عندما تجيب الطالبة إجابة صحيحة واحدة على الأقل في الخطة، ويصل إلى النصف إذا بدأتها ولم تجب إجابة صحيحة بعد. تتحدث النتائج تلقائيًا من جدول المتابعة.";
 }
 </script></body></html>
