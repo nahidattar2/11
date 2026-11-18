@@ -101,9 +101,11 @@ async function load(fresh){
   document.getElementById("ttl").textContent="متابعة تنفيذ الخطط — "+C.t;
   document.getElementById("sub").textContent="من نفّذت الخطة العلاجية ومن نفّذت الخطة الإثرائية";
   try{
-    const [g,p]=await Promise.all([C.quiz?jsonp(GRADES_API+"?quiz="+encodeURIComponent(C.quiz)):Promise.resolve({rows:[]}),
-      jsonp(PLANS_API+"?tab="+encodeURIComponent("كل النتائج")+"&ss="+PLANS_SS)]);
-    DATA={grades:(g.rows||[]),plans:(p.rows||[]).filter(r=>norm(r["فصل الكتاب"])===norm(C.book))};
+    const [g,p,o]=await Promise.all([C.quiz?jsonp(GRADES_API+"?quiz="+encodeURIComponent(C.quiz)):Promise.resolve({rows:[]}),
+      jsonp(PLANS_API+"?tab="+encodeURIComponent("كل النتائج")+"&ss="+PLANS_SS),
+      jsonp(PLANS_API+"?tab="+encodeURIComponent("فتح تقارير الفصول")).catch(()=>({rows:[]}))]);
+    const opened=(o.rows||[]).filter(r=>norm(r["فصل الكتاب"])===norm(C.book)).map(r=>({name:r["اسم الطالبة"],cls:r["الفصل"],score:null}));
+    DATA={grades:(g.rows||[]).concat(opened),plans:(p.rows||[]).filter(r=>norm(r["فصل الكتاب"])===norm(C.book))};
     build();
   }catch(e){document.getElementById("app").innerHTML='<div class="empty">تعذّر تحميل النتائج الآن — تأكدي من الاتصال واضغطي «تحديث».</div>'}
 }
@@ -116,7 +118,7 @@ function build(){
   const roster=[];
   DATA.grades.forEach(r=>{const nm=String(r.name||"").trim();if(nm.length<3||norm(nm)==="ناهد"||(!/[؀-ۿ]/.test(nm)&&nm.length>22))return;
     const c=clsNum(r.cls);if(roster.some(x=>x.c===c&&same(x.n,nm)))return;
-    roster.push({n:nm,c,p:Math.round(100*(+r.score)/(+r.total||C.total||1))})});
+    roster.push({n:nm,c,p:r.score===null?null:Math.round(100*(+r.score)/(+r.total||C.total||1))})});
   // سجل الخطط
   DATA.plans.forEach(r=>{const nm=String(r["اسم الطالبة"]||"").trim(),c=clsNum(r["الفصل"]);if(!nm)return;
     let s=roster.find(x=>x.c===c&&same(x.n,nm));if(!s){s={n:nm,c,p:null};roster.push(s)}

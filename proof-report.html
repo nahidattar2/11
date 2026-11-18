@@ -76,6 +76,7 @@ async function go(){
     const meta=JSON.parse(new TextDecoder().decode(plain.slice(4,4+ml)));
     const pdf=new Blob([plain.slice(4+ml)],{type:"application/pdf"});
     if(url) URL.revokeObjectURL(url); url=URL.createObjectURL(pdf);
+    try{fetch("https://script.google.com/macros/s/AKfycbzsP_TgAj852n0P5ocWo8rg08w5xNAkRzfRI90wo2dyhJKs-eWFqNWIQh3fhhBMtgZqwQ/exec",{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tab:"فتح تقارير الفصول",row:{"فصل الكتاب":"التبرير والبرهان","اسم الطالبة":meta.name,"الفصل":meta.cls}})})}catch(e){}
     $("nm").textContent=meta.name; $("cl").textContent="فصل "+meta.cls;
     $("open").href=url; $("dl").href=url; $("dl").download=meta.name+" - تقرير اختبار التبرير والبرهان.pdf";
     $("login").style.display="none"; $("done").style.display="block";
