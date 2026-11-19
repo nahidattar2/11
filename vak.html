@@ -48,7 +48,7 @@ const VAL={"دائمًا":2,"أحيانًا":1,"نادرًا":0};
 let cls=new URLSearchParams(location.search).get("c")||"",ans={};
 const app=document.getElementById("app");
 function form(){
-  app.innerHTML=`<div class="card"><label>اسمك الثلاثي</label><input id="nm" placeholder="كما في كشف الفصل">
+  app.innerHTML=`<div class="card"><label>اسمك الثلاثي (باللغة العربية)</label><input id="nm" placeholder="بالحروف العربية كما في كشف الفصل">
   <label>فصلك</label><div class="chips" id="cl">${[1,2,3].map(c=>`<button class="chip ${cls==c?"on":""}" data-v="${c}">أولى ${AR(c)}</button>`).join("")}</div></div>
   <div class="prog"><span id="pt">أجبتِ ٠ من ${AR(Q.length)}</span><div class="bar"><i id="pb" style="width:0"></i></div></div>
   <div class="card">${Q.map((q,i)=>`<div class="q"><p><b>${AR(i+1)}</b>${q[0]}</p><div class="opts">${Object.keys(VAL).map(o=>`<button class="op" data-q="${i}" data-v="${o}">${o}</button>`).join("")}</div></div>`).join("")}
@@ -74,4 +74,8 @@ function submit(){const nm=document.getElementById("nm").value.trim(),er=documen
   scrollTo({top:0,behavior:"smooth"});
 }
 form();
-</script></body></html>
+</script><script>/* الاسم بالعربية فقط */(function(){function bad(v){v=(v||"").trim();return v&&(/[A-Za-z]/.test(v)||!/[\u0600-\u06FF]/.test(v))}
+function msg(i,show){var m=document.getElementById("arnm");if(!m){m=document.createElement("div");m.id="arnm";m.style.cssText="color:#c62828;font-weight:700;font-size:.92rem;margin:6px 0 2px";m.textContent="⚠️ اكتبي اسمك باللغة العربية فقط (بدون حروف إنجليزية).";i.insertAdjacentElement("afterend",m)}m.style.display=show?"block":"none"}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("#go");var i=document.getElementById("nm");if(!b||!i||i.type==="hidden")return;
+if(bad(i.value)){e.preventDefault();e.stopImmediatePropagation();msg(i,true);i.focus()}else msg(i,false)},true);
+document.addEventListener("input",function(e){if(e.target&&e.target.id==="nm"&&!bad(e.target.value))msg(e.target,false)},true)})();</script></body></html>

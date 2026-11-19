@@ -297,9 +297,13 @@ function enrich(){ const e=EN[SID]; const c=qCard("تحدٍّ إثرائي",e); 
   askQ(c,e,ok=>{ c.appendChild(el(`<div class="fb ${ok?"ok":"no"}">${ok?"✔ رائع! إجابة صحيحة.":"✘ ليست الإجابة الصحيحة."} <br>${e.sol}</div>`)); save(ok?1:0,1,[ok?"صحيحة":"خاطئة"]); });}
 
 if(NAME) start();
-else{ app.appendChild(el(`<div class="card"><h2>قبل البدء</h2><label>اسم الطالبة</label><input id="nm"><label>الفصل</label>
+else{ app.appendChild(el(`<div class="card"><h2>قبل البدء</h2><label>اسم الطالبة (باللغة العربية)</label><input id="nm" placeholder="اكتبي اسمك الثلاثي بالحروف العربية"><label>الفصل</label>
   <select id="cl"><option>أولى ١</option><option>أولى ٢</option><option>أولى ٣</option></select><button class="btn" id="go">ابدئي</button></div>`));
   document.getElementById("go").onclick=()=>{const v=document.getElementById("nm").value.trim(); if(!v) return; NAME=v; CLS=document.getElementById("cl").value; who(); start();}; }
 </script>
-</body>
+<script>/* الاسم بالعربية فقط */(function(){function bad(v){v=(v||"").trim();return v&&(/[A-Za-z]/.test(v)||!/[\u0600-\u06FF]/.test(v))}
+function msg(i,show){var m=document.getElementById("arnm");if(!m){m=document.createElement("div");m.id="arnm";m.style.cssText="color:#c62828;font-weight:700;font-size:.92rem;margin:6px 0 2px";m.textContent="⚠️ اكتبي اسمك باللغة العربية فقط (بدون حروف إنجليزية).";i.insertAdjacentElement("afterend",m)}m.style.display=show?"block":"none"}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("#go");var i=document.getElementById("nm");if(!b||!i||i.type==="hidden")return;
+if(bad(i.value)){e.preventDefault();e.stopImmediatePropagation();msg(i,true);i.focus()}else msg(i,false)},true);
+document.addEventListener("input",function(e){if(e.target&&e.target.id==="nm"&&!bad(e.target.value))msg(e.target,false)},true)})();</script></body>
 </html>
