@@ -18,7 +18,7 @@ h1{text-align:center;font-size:40px;font-weight:900;color:#3a1c74;margin:10px 0 
 .ring{position:relative;width:150px;height:150px;flex:none}.ring svg{width:100%;height:100%}.ring circle{transition:stroke-dasharray 1s}
 .rt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}.rt b{font-size:36px}.rt small{font-size:15px;color:#6a5a99;font-weight:bold}
 .bar{height:14px;background:#ece5f6;border-radius:9px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;border-radius:9px;transition:width 1s}
-.rem .bar i{background:linear-gradient(90deg,#f0a7c9,#c2185b)}.enr .bar i{background:linear-gradient(90deg,#b596f2,#4a2a9c)}
+.rem .bar i{background:linear-gradient(90deg,#8fd3f4,#1565c0)}.enr .bar i{background:linear-gradient(90deg,#b596f2,#4a2a9c)}
 .lists{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
 .lst{background:rgba(255,255,255,.85);border-radius:24px;padding:14px 18px;box-shadow:0 8px 24px rgba(110,70,190,.12)}
 .lst h3{font-size:23px;margin-bottom:8px}
@@ -133,7 +133,7 @@ function build(){
   const ring=(p,col1,col2,sub)=>{const r=42,c=2*Math.PI*r,id="g"+col1.slice(1);return`<div class="ring"><svg viewBox="0 0 100 100"><defs><linearGradient id="${id}"><stop offset="0" stop-color="${col1}"/><stop offset="1" stop-color="${col2}"/></linearGradient></defs><circle cx="50" cy="50" r="${r}" fill="none" stroke="#ece5f6" stroke-width="11"/><circle cx="50" cy="50" r="${r}" fill="none" stroke="url(#${id})" stroke-width="11" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 50 50)"/></svg><div class="rt"><b>${AR(p)}٪</b><small>${sub}</small></div></div>`};
   const pr=n?Math.round(100*rD/n):0, pe=n?Math.round(100*eD/n):0;
   let h=`<div class="rings">
-   <div class="rc rem">${ring(pr,"#f0a7c9","#c2185b",`${AR(rD)} من ${AR(n)}`)}<div style="flex:1"><h2>🩺 الخطة العلاجية</h2><p>نفّذتها ${AR(rD)} من ${AR(n)} طالبة</p><div class="bar"><i style="width:${pr}%"></i></div></div></div>
+   <div class="rc rem">${ring(pr,"#8fd3f4","#1565c0",`${AR(rD)} من ${AR(n)}`)}<div style="flex:1"><h2>🩺 الخطة العلاجية</h2><p>نفّذتها ${AR(rD)} من ${AR(n)} طالبة</p><div class="bar"><i style="width:${pr}%"></i></div></div></div>
    <div class="rc enr">${ring(pe,"#b596f2","#4a2a9c",`${AR(eD)} من ${AR(n)}`)}<div style="flex:1"><h2>🚀 الخطة الإثرائية</h2><p>نفّذتها ${AR(eD)} من ${AR(n)} طالبة</p><div class="bar"><i style="width:${pe}%"></i></div></div></div></div>`;
   const cell=(a,cls)=>{const v=lvl(a);return`<div class="pc ${cls}"><div class="bar"><i style="width:${v}%"></i></div><span class="pl l${v}">${lbl[v]}</span></div>`};
   const half=n,cols=[L];
