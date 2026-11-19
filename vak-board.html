@@ -3,7 +3,8 @@
 <style>
 @font-face{font-family:Cairo;src:url(fonts-Cairo.ttf)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Cairo,"Geeza Pro",Tahoma,sans-serif;color:#2e1660;min-height:100vh;line-height:1.6;background:linear-gradient(180deg,#e6d8fb 0%,#f0e8fd 35%,#f9f5ff 100%)}
+body{font-family:Cairo,"Geeza Pro",Tahoma,sans-serif;color:#2e1660;min-height:100vh;line-height:1.6;background:#efe6fd}
+.lg{display:block;width:330px;margin:4px auto 8px;background:#fff;border-radius:16px;padding:8px 14px}
 .page{max-width:1300px;margin:0 auto;padding:12px 16px 20px}
 .top{display:flex;justify-content:space-between;gap:10px}
 .top a,.top button{font:inherit;font-weight:bold;text-decoration:none;border:0;cursor:pointer;border-radius:12px;padding:5px 14px;background:#fff;color:#4a2a9c;box-shadow:0 3px 10px rgba(110,70,190,.18)}
@@ -31,7 +32,7 @@ h1{text-align:center;font-size:30px;font-weight:900;color:#3a1c74;margin-top:4px
 <div id="lock"><div class="lk"><div style="font-size:44px">🔒</div><h2>للمعلمة فقط — أدخلي الرقم السري</h2><input id="pin" type="password" inputmode="numeric" maxlength="8"><button onclick="unlock()">دخول</button><div class="er" id="er"></div></div></div>
 <div class="page">
 <div class="top"><a href="links.html">→ روابط اختباراتي</a><span><button onclick="load()">🔄 تحديث</button> <button onclick="print()">🖨️ طباعة / PDF</button></span></div>
-<h1>تقرير تصنيف الطالبات حسب أنماط التعلم</h1><div class="sub" id="sub">مادة الرياضيات · المعلمة ناهد علي عطار · مدرسة الموهوبات التقنية الثانوية – مكة المكرمة · ١٤٤٨هـ</div>
+<img class="lg" src="cert-logo-color.png" alt="وزارة التعليم – أكاديمية طويق"><h1>تقرير تصنيف الطالبات حسب أنماط التعلم</h1><div class="sub" id="sub">مادة الرياضيات · إعداد معلمة الرياضيات: ناهد علي عطار · مدرسة الموهوبات التقنية الثانوية – مكة المكرمة · ١٤٤٨هـ</div>
 <div class="tabs" id="tabs"></div>
 <div id="app"><div class="empty">جارٍ تحميل الإجابات…</div></div>
 <div class="sig"><div><b>المعلمة</b><br>ناهد علي عطار<span>التوقيع</span></div><div><b>مديرة المدرسة</b><br>هناء إبراهيم بسيوني<span>التوقيع والختم</span></div></div>
