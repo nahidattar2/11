@@ -13,9 +13,9 @@ h1{text-align:center;font-size:30px;font-weight:900;color:#3a1c74;margin-top:4px
 .tab.on{background:linear-gradient(180deg,#9b74e6,#6440b4);color:#fff;border-color:#6440b4}
 .sum{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:center;background:#fff;border-radius:22px;padding:14px 18px;box-shadow:0 8px 24px rgba(110,70,190,.12)}
 .pie{position:relative;width:200px;height:200px}.pie .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.pie b{font-size:34px}.pie small{font-weight:bold;color:#6a5a99}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .st{border-radius:16px;padding:10px;text-align:center;background:var(--bg);border:2px solid var(--c)}.st .e{font-size:28px}.st b{display:block;font-size:30px;color:var(--c);line-height:1.2}.st span{font-weight:bold}
-.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.cols{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:14px}
 .col{background:#fff;border-radius:18px;padding:10px 12px;border-top:6px solid var(--c);box-shadow:0 6px 18px rgba(110,70,190,.1)}
 .col h3{color:var(--c);font-size:18px}.col ol{padding-inline-start:20px;font-weight:bold;font-size:15px}.col .tp{font-size:13px;color:#5b4a8a;background:var(--bg);border-radius:10px;padding:6px 8px;margin-top:8px;line-height:1.7}
 .empty{text-align:center;color:#6a5a99;padding:20px;font-weight:bold}
@@ -44,7 +44,8 @@ const norm=s=>String(s||"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replac
 const clsNum=c=>{const m=String(c).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).match(/\d/);return m?m[0]:""};
 const S=[{k:"بصرية",e:"👁️",c:"#7b4fd0",bg:"#f2ecff",tp:"الرسوم والمخططات، الألوان، الخرائط الذهنية، العرض المرئي للخطوات."},
  {k:"سمعية",e:"👂",c:"#d63384",bg:"#ffeef6",tp:"النقاش والحوار، الشرح اللفظي، التعلم بالأقران، تلخيص الحل بصوت مسموع."},
- {k:"حسية حركية",e:"✋",c:"#1f8a4c",bg:"#e9f8ef",tp:"الأدوات الهندسية والنماذج، الأنشطة العملية، الألعاب التعليمية، التعلم بالعمل."},
+ {k:"حسية",e:"✋",c:"#1f8a4c",bg:"#e9f8ef",tp:"الأدوات الهندسية والمجسمات، قص الأشكال وطيّها، البطاقات والقطع اليدوية، الكتابة باليد."},
+ {k:"حركية",e:"🏃‍♀️",c:"#1a73b8",bg:"#e8f3fd",tp:"الحل على السبورة، الألعاب والمسابقات الحركية، المحطات التعليمية، التنقل بين المجموعات."},
  {k:"متعدد الأنماط",e:"🌈",c:"#c98a12",bg:"#fff6e3",tp:"تنويع الاستراتيجيات داخل الحصة الواحدة يناسبهن جميعًا."}];
 let CLS="all",ROWS=null;
 function unlock(){if(document.getElementById("pin").value===PIN){try{sessionStorage.setItem("vpin","1")}catch(e){}document.getElementById("lock").remove();load()}else document.getElementById("er").textContent="الرقم السري غير صحيح"}
