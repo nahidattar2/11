@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تصنيف الطالبات حسب أنماط التعلم</title>
+<style>
+@font-face{font-family:Cairo;src:url(fonts-Cairo.ttf)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Cairo,"Geeza Pro",Tahoma,sans-serif;color:#2e1660;min-height:100vh;line-height:1.6;background:linear-gradient(180deg,#e6d8fb 0%,#f0e8fd 35%,#f9f5ff 100%)}
+.page{max-width:1300px;margin:0 auto;padding:12px 16px 20px}
+.top{display:flex;justify-content:space-between;gap:10px}
+.top a,.top button{font:inherit;font-weight:bold;text-decoration:none;border:0;cursor:pointer;border-radius:12px;padding:5px 14px;background:#fff;color:#4a2a9c;box-shadow:0 3px 10px rgba(110,70,190,.18)}
+h1{text-align:center;font-size:30px;font-weight:900;color:#3a1c74;margin-top:4px}.sub{text-align:center;color:#6a4bb0;font-weight:bold}
+.tabs{display:flex;justify-content:center;gap:10px;margin:10px 0 14px}
+.tab{font:inherit;font-size:20px;font-weight:bold;border:2px solid #b596f2;background:#fff;color:#4a2a9c;border-radius:14px;padding:4px 26px;cursor:pointer}
+.tab.on{background:linear-gradient(180deg,#9b74e6,#6440b4);color:#fff;border-color:#6440b4}
+.sum{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:center;background:#fff;border-radius:22px;padding:14px 18px;box-shadow:0 8px 24px rgba(110,70,190,.12)}
+.pie{position:relative;width:200px;height:200px}.pie .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.pie b{font-size:34px}.pie small{font-weight:bold;color:#6a5a99}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.st{border-radius:16px;padding:10px;text-align:center;background:var(--bg);border:2px solid var(--c)}.st .e{font-size:28px}.st b{display:block;font-size:30px;color:var(--c);line-height:1.2}.st span{font-weight:bold}
+.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.col{background:#fff;border-radius:18px;padding:10px 12px;border-top:6px solid var(--c);box-shadow:0 6px 18px rgba(110,70,190,.1)}
+.col h3{color:var(--c);font-size:18px}.col ol{padding-inline-start:20px;font-weight:bold;font-size:15px}.col .tp{font-size:13px;color:#5b4a8a;background:var(--bg);border-radius:10px;padding:6px 8px;margin-top:8px;line-height:1.7}
+.empty{text-align:center;color:#6a5a99;padding:20px;font-weight:bold}
+.sig{display:none;justify-content:space-between;margin-top:18px}.sig div{width:45%;text-align:center}.sig span{display:block;margin-top:30px;border-top:1px dashed #9b7bd0;color:#6f648a;font-size:12px}
+#lock{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e6d8fb,#f9f5ff);z-index:9}
+.lk{background:#fff;border-radius:26px;padding:28px 30px;text-align:center;box-shadow:0 12px 34px rgba(110,70,190,.25);width:min(420px,92vw)}
+.lk h2{font-size:22px;margin:8px 0 14px}.lk input{font:inherit;font-size:30px;text-align:center;letter-spacing:.4em;width:100%;border:2px solid #cdb6f6;border-radius:14px;padding:8px;outline:0;direction:ltr}
+.lk button{font:inherit;font-size:22px;font-weight:bold;margin-top:14px;width:100%;border:0;border-radius:14px;padding:10px;color:#fff;background:linear-gradient(180deg,#9b74e6,#6440b4);cursor:pointer}.lk .er{color:#c2185b;font-weight:bold;min-height:1.6em}
+@media(max-width:900px){.sum{grid-template-columns:1fr;justify-items:center}.cards,.cols{grid-template-columns:1fr 1fr}}
+@media print{body{background:#fff}.top,.tabs{display:none}.sig{display:flex}.col,.sum{box-shadow:none;border:1px solid #e3d8f2}}
+</style></head><body>
+<div id="lock"><div class="lk"><div style="font-size:44px">🔒</div><h2>للمعلمة فقط — أدخلي الرقم السري</h2><input id="pin" type="password" inputmode="numeric" maxlength="8"><button onclick="unlock()">دخول</button><div class="er" id="er"></div></div></div>
+<div class="page">
+<div class="top"><a href="links.html">→ روابط اختباراتي</a><span><button onclick="load()">🔄 تحديث</button> <button onclick="print()">🖨️ طباعة / PDF</button></span></div>
+<h1>تقرير تصنيف الطالبات حسب أنماط التعلم</h1><div class="sub" id="sub">مادة الرياضيات · المعلمة ناهد علي عطار · مدرسة الموهوبات التقنية الثانوية – مكة المكرمة · ١٤٤٨هـ</div>
+<div class="tabs" id="tabs"></div>
+<div id="app"><div class="empty">جارٍ تحميل الإجابات…</div></div>
+<div class="sig"><div><b>المعلمة</b><br>ناهد علي عطار<span>التوقيع</span></div><div><b>مديرة المدرسة</b><br>هناء إبراهيم بسيوني<span>التوقيع والختم</span></div></div>
+</div>
+<script>
+const PIN="1448",API="https://script.google.com/macros/s/AKfycbzsP_TgAj852n0P5ocWo8rg08w5xNAkRzfRI90wo2dyhJKs-eWFqNWIQh3fhhBMtgZqwQ/exec",TAB="مقياس أنماط التعلم";
+const AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>String(s||"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/\s+/g," ").trim();
+const clsNum=c=>{const m=String(c).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).match(/\d/);return m?m[0]:""};
+const S=[{k:"بصرية",e:"👁️",c:"#7b4fd0",bg:"#f2ecff",tp:"الرسوم والمخططات، الألوان، الخرائط الذهنية، العرض المرئي للخطوات."},
+ {k:"سمعية",e:"👂",c:"#d63384",bg:"#ffeef6",tp:"النقاش والحوار، الشرح اللفظي، التعلم بالأقران، تلخيص الحل بصوت مسموع."},
+ {k:"حسية حركية",e:"✋",c:"#1f8a4c",bg:"#e9f8ef",tp:"الأدوات الهندسية والنماذج، الأنشطة العملية، الألعاب التعليمية، التعلم بالعمل."},
+ {k:"متعدد الأنماط",e:"🌈",c:"#c98a12",bg:"#fff6e3",tp:"تنويع الاستراتيجيات داخل الحصة الواحدة يناسبهن جميعًا."}];
+let CLS="1",ROWS=null;
+function unlock(){if(document.getElementById("pin").value===PIN){try{sessionStorage.setItem("vpin","1")}catch(e){}document.getElementById("lock").remove();load()}else document.getElementById("er").textContent="الرقم السري غير صحيح"}
+document.getElementById("pin").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+try{if(sessionStorage.getItem("vpin")==="1"){document.getElementById("lock").remove();setTimeout(load)}}catch(e){}
+function load(){const cb="cb"+Math.random().toString(36).slice(2),s=document.createElement("script");
+  window[cb]=d=>{delete window[cb];s.remove();ROWS=d.rows||[];build()};s.onerror=()=>document.getElementById("app").innerHTML='<div class="empty">تعذّر التحميل — اضغطي «تحديث».</div>';
+  s.src=API+"?tab="+encodeURIComponent(TAB)+"&callback="+cb+"&_="+Date.now();document.body.appendChild(s)}
+function build(){
+  const last={};ROWS.forEach(r=>{const n=String(r["اسم الطالبة"]||"").trim();if(n.length<3)return;last[clsNum(r["الفصل"])+"|"+norm(n)]={n,c:clsNum(r["الفصل"]),s:String(r["النمط"]||"")}});
+  document.getElementById("tabs").innerHTML=["1","2","3"].map(c=>`<button class="tab ${c===CLS?"on":""}" onclick="CLS='${c}';build()">أولى ${AR(c)}</button>`).join("");
+  const L=Object.values(last).filter(x=>x.c===CLS).sort((a,b)=>a.n.localeCompare(b.n,"ar")),n=L.length;
+  if(!n){document.getElementById("app").innerHTML='<div class="empty">لم تُجب طالبات هذا الفصل على المقياس بعد</div>';return}
+  const G=S.map(x=>({...x,L:L.filter(s=>s.s===x.k)}));
+  let a=0,r=80,C=2*Math.PI*r,seg="";
+  G.forEach(g=>{const f=g.L.length/n;if(f>0)seg+=`<circle cx="100" cy="100" r="${r}" fill="none" stroke="${g.c}" stroke-width="34" stroke-dasharray="${C*f} ${C}" stroke-dashoffset="${-C*a}" transform="rotate(-90 100 100)"/>`;a+=f});
+  document.getElementById("app").innerHTML=`<div class="sum"><div class="pie"><svg viewBox="0 0 200 200">${seg}</svg><div class="c"><b>${AR(n)}</b><small>طالبة — أولى ${AR(CLS)}</small></div></div>
+   <div class="cards">${G.map(g=>`<div class="st" style="--c:${g.c};--bg:${g.bg}"><div class="e">${g.e}</div><b>${AR(g.L.length)}</b><span>${g.k}</span><div style="font-weight:bold;color:#6a5a99">${AR(Math.round(100*g.L.length/n))}٪</div></div>`).join("")}</div></div>
+   <div class="cols">${G.map(g=>`<div class="col" style="--c:${g.c};--bg:${g.bg}"><h3>${g.e} ${g.k} (${AR(g.L.length)})</h3>${g.L.length?`<ol>${g.L.map(s=>`<li>${esc(s.n)}</li>`).join("")}</ol>`:'<div style="color:#999">—</div>'}<div class="tp"><b>ما يناسبهن:</b> ${g.tp}</div></div>`).join("")}</div>`;
+}
+</script></body></html>

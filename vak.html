@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اكتشفي نمط تعلّمك 💜</title>
+<style>
+@font-face{font-family:Cairo;src:url(fonts-Cairo.ttf)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Cairo,"Geeza Pro",Tahoma,sans-serif;color:#2e1660;min-height:100vh;background:linear-gradient(160deg,#fde7f3 0%,#efe4ff 45%,#e3f1ff 100%)}
+.w{max-width:680px;margin:0 auto;padding:16px 14px 30px}
+.hero{text-align:center}.hero .e{font-size:44px}.hero h1{font-size:30px;font-weight:900;color:#5b2fa8;line-height:1.3}.hero p{font-weight:700;color:#7a5bb0}
+.card{background:#fff;border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 8px 22px rgba(110,70,190,.13)}
+label{display:block;font-weight:800;margin:8px 0 6px}
+input{width:100%;font:inherit;font-size:18px;border:2px solid #d9c8f7;border-radius:14px;padding:9px 12px;outline:0}input:focus{border-color:#7b4fd0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{font:inherit;font-weight:800;font-size:16px;border:2px solid #d9c8f7;background:#faf7ff;color:#4a2a9c;border-radius:999px;padding:5px 16px;cursor:pointer}
+.chip.on{background:linear-gradient(180deg,#9b74e6,#6440b4);color:#fff;border-color:#6440b4}
+.q{padding:12px 4px;border-bottom:1px dashed #e6dcf7}.q:last-child{border:0}
+.q p{font-weight:800;font-size:17px;margin-bottom:8px}.q p b{color:#b07cf2;margin-left:6px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.op{font:inherit;font-weight:800;font-size:15px;border:2px solid #e2d6f7;background:#faf7ff;color:#5b4a8a;border-radius:14px;padding:8px 4px;cursor:pointer}
+.op.on{background:#efe4ff;border-color:#7b4fd0;color:#4a2a9c}
+.prog{position:sticky;top:0;z-index:2;background:rgba(255,255,255,.92);border-radius:14px;padding:6px 12px;margin-top:12px;font-weight:800;font-size:14px;color:#7a5bb0;box-shadow:0 4px 12px rgba(110,70,190,.1)}
+.bar{height:9px;background:#ece5f6;border-radius:9px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#ff8ec7,#7b4fd0);transition:width .3s}
+.go{display:block;width:100%;font:inherit;font-size:21px;font-weight:900;margin-top:16px;border:0;border-radius:16px;padding:12px;color:#fff;background:linear-gradient(135deg,#ff8ec7,#9b74e6 60%,#6f8cff);box-shadow:0 6px 0 #6440b4;cursor:pointer}
+.err{color:#c2185b;font-weight:800;text-align:center;min-height:1.4em;margin-top:6px}
+.res{text-align:center}.res .big{font-size:64px}.res h2{font-size:28px;color:#5b2fa8}.res .tip{text-align:right;background:#faf7ff;border-radius:14px;padding:10px 14px;margin-top:10px;line-height:1.9;font-weight:700}
+.rb{display:grid;grid-template-columns:5.5rem 1fr 2.6rem;align-items:center;gap:8px;margin-top:8px;font-weight:800}.rb .bar{height:14px;margin:0}
+.foot{text-align:center;color:#8a72b8;font-size:13px;font-weight:700;margin-top:14px}
+</style></head><body><div class="w">
+<div class="hero"><div class="e">🧠✨</div><h1>اكتشفي نمط تعلّمك</h1><p>أجيبي بصدق — لا توجد إجابة صحيحة أو خاطئة 💜</p></div>
+<div id="app"></div>
+<div class="foot">مادة الرياضيات · المعلمة ناهد علي عطار · ١٤٤٨هـ</div>
+</div>
+<script>
+const SAVE="https://script.google.com/macros/s/AKfycbzsP_TgAj852n0P5ocWo8rg08w5xNAkRzfRI90wo2dyhJKs-eWFqNWIQh3fhhBMtgZqwQ/exec";
+const TAB="مقياس أنماط التعلم";
+const AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const Q=[["أفهم الدرس أكثر عندما أرى رسمًا أو شكلًا أو مخططًا.","V"],["أتذكر ما أسمعه من شرح المعلمة أكثر مما أقرؤه.","A"],["أتعلم أفضل عندما أجرّب بيدي أو أتحرك.","K"],
+ ["أحب تلوين ملاحظاتي واستخدام الخرائط الذهنية.","V"],["أحب مناقشة الحل مع زميلاتي بصوت مسموع.","A"],["أحب استخدام الأدوات الهندسية والنماذج المجسمة.","K"],
+ ["أتذكر الصفحة وموضع المعلومة فيها عند المذاكرة.","V"],["أكرر المعلومة بصوت عالٍ لأحفظها.","A"],["أشعر بالملل إذا جلست طويلًا دون نشاط.","K"],
+ ["أفضّل أن تكتب المعلمة الخطوات على السبورة.","V"],["أفهم الفكرة بسرعة عندما تشرحها لي إحدى زميلاتي.","A"],["أفهم أكثر عندما أحل المسألة بنفسي خطوة خطوة.","K"],
+ ["أتخيل الأشكال الهندسية في ذهني بسهولة.","V"],["أحب الاستماع إلى شرح مسجّل أو مقطع صوتي.","A"],["أحب الأنشطة التي فيها حركة أو ألعاب تعليمية.","K"]];
+const ST={V:{n:"بصرية",e:"👁️",t:"تتعلمين بالرؤية: الرسوم والألوان والمخططات.",tips:"• ارسمي المسألة قبل حلها.<br>• لوّني الخطوات المهمة.<br>• استخدمي الخرائط الذهنية للقوانين."},
+ A:{n:"سمعية",e:"👂",t:"تتعلمين بالاستماع والنقاش.",tips:"• اشرحي الحل لنفسك بصوت مسموع.<br>• ذاكري مع زميلة وتناقشا.<br>• سجّلي القوانين بصوتك واستمعي لها."},
+ K:{n:"حسية حركية",e:"✋",t:"تتعلمين بالتجربة والعمل باليد.",tips:"• استخدمي الأدوات الهندسية والنماذج.<br>• حلّي كثيرًا من الأمثلة بنفسك.<br>• خذي استراحات قصيرة أثناء المذاكرة."}};
+const VAL={"دائمًا":2,"أحيانًا":1,"نادرًا":0};
+let cls=new URLSearchParams(location.search).get("c")||"",ans={};
+const app=document.getElementById("app");
+function form(){
+  app.innerHTML=`<div class="card"><label>اسمك الثلاثي</label><input id="nm" placeholder="كما في كشف الفصل">
+  <label>فصلك</label><div class="chips" id="cl">${[1,2,3].map(c=>`<button class="chip ${cls==c?"on":""}" data-v="${c}">أولى ${AR(c)}</button>`).join("")}</div></div>
+  <div class="prog"><span id="pt">أجبتِ ٠ من ${AR(Q.length)}</span><div class="bar"><i id="pb" style="width:0"></i></div></div>
+  <div class="card">${Q.map((q,i)=>`<div class="q"><p><b>${AR(i+1)}</b>${q[0]}</p><div class="opts">${Object.keys(VAL).map(o=>`<button class="op" data-q="${i}" data-v="${o}">${o}</button>`).join("")}</div></div>`).join("")}
+  <button class="go" id="go">اعرضي نمط تعلّمي 🎉</button><div class="err" id="er"></div></div>`;
+  document.querySelectorAll("#cl .chip").forEach(b=>b.onclick=()=>{document.querySelectorAll("#cl .chip").forEach(x=>x.classList.remove("on"));b.classList.add("on");cls=b.dataset.v});
+  document.querySelectorAll(".op").forEach(b=>b.onclick=()=>{const q=b.dataset.q;document.querySelectorAll(`.op[data-q="${q}"]`).forEach(x=>x.classList.remove("on"));b.classList.add("on");ans[q]=b.dataset.v;
+    const n=Object.keys(ans).length;document.getElementById("pt").textContent=`أجبتِ ${AR(n)} من ${AR(Q.length)}`;document.getElementById("pb").style.width=(100*n/Q.length)+"%"});
+  document.getElementById("go").onclick=submit;
+}
+function submit(){const nm=document.getElementById("nm").value.trim(),er=document.getElementById("er");
+  if(nm.split(/\s+/).length<2)return er.textContent="اكتبي اسمك الثنائي على الأقل";
+  if(!cls)return er.textContent="اختاري فصلك";
+  if(Object.keys(ans).length<Q.length)return er.textContent="أجيبي عن كل العبارات 🌸";
+  const s={V:0,A:0,K:0};Q.forEach((q,i)=>s[q[1]]+=VAL[ans[i]]);
+  const mx=Math.max(s.V,s.A,s.K),top=Object.keys(s).filter(k=>s[k]===mx),style=top.length>1?"متعدد الأنماط":ST[top[0]].n;
+  try{fetch(SAVE,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tab:TAB,row:{"اسم الطالبة":nm,"الفصل":"أولى "+AR(cls),"بصري":s.V,"سمعي":s.A,"حسي حركي":s.K,"النمط":style}})})}catch(e){}
+  const pct=k=>Math.round(100*s[k]/10);
+  app.innerHTML=`<div class="card res"><div class="big">${top.map(k=>ST[k].e).join("")}</div><h2>نمط تعلّمك: ${style==="متعدد الأنماط"?"متعدد الأنماط 🌈":style}</h2>
+   <p style="font-weight:700;color:#7a5bb0">${top.length>1?"تتعلمين بأكثر من طريقة — هذه ميزة رائعة!":ST[top[0]].t}</p>
+   ${["V","A","K"].map(k=>`<div class="rb"><span>${ST[k].e} ${ST[k].n}</span><div class="bar"><i style="width:${pct(k)}%"></i></div><span>${AR(pct(k))}٪</span></div>`).join("")}
+   <div class="tip"><b>نصائح لمذاكرة الرياضيات:</b><br>${top.map(k=>ST[k].tips).join("<br>")}</div>
+   <p style="margin-top:12px;font-weight:800;color:#1f8a4c">✓ تم إرسال إجاباتك للمعلمة، شكرًا لكِ 💜</p></div>`;
+  scrollTo({top:0,behavior:"smooth"});
+}
+form();
+</script></body></html>
