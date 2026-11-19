@@ -82,6 +82,7 @@ const CH={
 /* ===================== */
 const AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const OFFICIAL={"1": ["أسيل عبدالله القرشي", "ألين وليد الحربي", "تالة عتاب السيامي", "جانيت علي فردان", "جنى سعد زبرماوي", "جوري إبراهيم الغامدي", "رتيل مازن الأحمدي", "روين عبدالعزيز الحجاجي", "ريما عبدالله شريفي", "رينا يوسف الغامدي", "سمر مطلق المالكي", "سمية إبراهيم الشنقيطي", "غيداء سعيد الشريف", "فاطمة عبدالهادي القرني", "ليال يوسف لبان", "لين أنس التويم", "لين مجدي العتيبي", "نوف سامي جهري", "وجن ساعد الجحدلي", "إيلان سعد الصواط"], "2": ["ألمى أحمد الزهراني", "أمل لافي الظفيري", "إيمان شكري سين جي", "تالين بدر مداح", "تالين محمد نجار", "جنى عبدالستار جوهرجي", "دانة نايف الحربي", "ريما عبدالعزيز الزهراني", "شادن يوسف البطحي", "شهد عايد السلمي", "صبا عبدالله الزهراني", "لارين عبدالله فلمبان", "ليان رضا كردي", "مريم حمزة الشامي", "ملاذ بادر الدعجاني", "منار خالد نصيف", "ملاذ محمد القرني", "ألين عبدالرحمن القارحي", "ريما عبدالعزيز الغامدي"], "3": ["آية منصور مساوى", "أصايل تركي الثقفي", "أنجي حسين سمكري", "تولين محمد بناء", "حلا رائد خان", "حنين خالد العتيبي", "ديالا ياسين الحربي", "ريتال سلطان البنيان", "فاطمة سلطان الحازمي", "لجين عيسى نور ولي", "ليان عمار صميلي", "ليان يحيى الودعاني", "مريم عثمان هوساوي", "وتين عبدالوهاب الهاشمي الأمير", "ود مصطفى الفلاتي", "وفاء محمد الشهري", "عبير عثمان العمري", "فرح فارس بدر"]};
 const norm=s=>String(s||"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/[ًٌٍَُِّْـ]/g,"").replace(/\s+/g," ").trim().toLowerCase();
 const clsNum=c=>{const m=String(c).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).match(/\d/);return m?m[0]:""};
 const chId=+(new URLSearchParams(location.search).get("ch")||2), C=CH[chId]||CH[2];
@@ -116,13 +117,17 @@ function fit(){const r=document.documentElement;let f=24;r.style.fontSize=f+"px"
 addEventListener("resize",()=>{if(DATA)fit()});
 function build(){
   // قائمة الطالبات من اختبار الفصل (المحاولة الأولى لكل طالبة)
-  const roster=[];
-  DATA.grades.forEach(r=>{const nm=String(r.name||"").trim();if(nm.length<3||norm(nm)==="ناهد"||(!/[؀-ۿ]/.test(nm)&&nm.length>22))return;
-    const c=clsNum(r.cls);if(roster.some(x=>x.c===c&&same(x.n,nm)))return;
-    roster.push({n:nm,c,p:r.score===null?null:Math.round(100*(+r.score)/(+r.total||C.total||1))})});
+  const roster=[];Object.keys(OFFICIAL).forEach(c=>OFFICIAL[c].forEach(n=>roster.push({n,c,p:null})));
+  const ed=(x,y)=>{if(Math.abs(x.length-y.length)>1)return 9;const d=[...Array(y.length+1).keys()];for(let i=1;i<=x.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=y.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(x[i-1]===y[j-1]?0:1));p=t}}return d[y.length]};
+  const tk=(x,y)=>x===y||(x.length>=4&&y.length>=4&&ed(x.replace(/^ال/,""),y.replace(/^ال/,""))<=1);
+  const match=(nm,c)=>{const a=norm(nm).split(" ");if(a.length<2)return null;
+    return roster.find(x=>x.c===c&&same(x.n,nm))||roster.find(x=>{if(x.c!==c)return false;const b=norm(x.n).split(" ");if(!tk(a[0],b[0]))return false;let j=1;for(let i=1;i<a.length;i++){while(j<b.length&&!tk(a[i],b[j]))j++;if(j>=b.length)return false;j++}return true})||null};
+  // درجات الاختبار تُربط بالأسماء الرسمية فقط (تُهمل الأسماء الإنجليزية وغير المطابقة)
+  DATA.grades.forEach(r=>{const nm=String(r.name||"").trim();if(!/[؀-ۿ]/.test(nm))return;const s=match(nm,clsNum(r.cls));
+    if(s&&s.p==null&&r.score!==null)s.p=Math.round(100*(+r.score)/(+r.total||C.total||1))});
   // سجل الخطط
   DATA.plans.forEach(r=>{const nm=String(r["اسم الطالبة"]||"").trim(),c=clsNum(r["الفصل"]);if(!nm)return;
-    let s=roster.find(x=>x.c===c&&same(x.n,nm));if(!s){s={n:nm,c,p:null};roster.push(s)}
+    const s=match(nm,c);if(!s)return;
     const type=String(r["الخطة"]).includes("إثرا")||String(r["الخطة"]).includes("اثرا")?"e":"r";
     const res=String(r["النتيجة"]);(s[type]=s[type]||[]).push({sk:r["المهارة"],ok:(res.includes("أتقن")||res.includes("صحيح"))&&!res.includes("لم")&&!res.includes("خاطئ")})});
   const classes=["1","2","3"];
