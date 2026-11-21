@@ -28,6 +28,8 @@ h1{text-align:center;font-size:30px;font-weight:900;color:#3a1c74;margin-top:4px
 @media(max-width:900px){.sum{grid-template-columns:1fr;justify-items:center}.cards,.cols{grid-template-columns:1fr 1fr}}
 .sh{text-align:center;color:#5b3aa6;font-size:22px;margin:22px 0 10px;border-bottom:2px dashed #d9c9f5;padding-bottom:6px}
 @media print{.pb{break-before:page}body{background:#fff}.top,.tabs{display:none}.sig{display:flex}.col,.sum{box-shadow:none;border:1px solid #e3d8f2}}
+.stt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}.sc{background:#fff;border-radius:18px;padding:10px 14px;box-shadow:0 6px 18px rgba(110,70,190,.1);border-top:6px solid var(--c)}.sc.ok{--c:#1f8a4c}.sc.no{--c:#d9822b}.sc h3{color:var(--c);font-size:19px}.sc ol{list-style:arabic-indic;padding-inline-start:22px;font-weight:bold;font-size:16px;columns:2;column-gap:22px}.sc .nn{color:#6a5a99;font-weight:bold;padding:6px 0}
+@media(max-width:900px){.stt{grid-template-columns:1fr}.sc ol{columns:1}}
 </style></head><body>
 <div id="lock"><div class="lk"><div style="font-size:44px">🔒</div><h2>للمعلمة فقط — أدخلي الرقم السري</h2><input id="pin" type="password" inputmode="numeric" maxlength="8"><button onclick="unlock()">دخول</button><div class="er" id="er"></div></div></div>
 <div class="page">
@@ -48,6 +50,17 @@ const S=[{k:"بصرية",e:"👁️",c:"#7b4fd0",bg:"#f2ecff",tp:"الرسوم �
  {k:"حسية",e:"✋",c:"#1f8a4c",bg:"#e9f8ef",tp:"الأدوات الهندسية والمجسمات، قص الأشكال وطيّها، البطاقات والقطع اليدوية، الكتابة باليد."},
  {k:"حركية",e:"🏃‍♀️",c:"#1a73b8",bg:"#e8f3fd",tp:"الحل على السبورة، الألعاب والمسابقات الحركية، المحطات التعليمية، التنقل بين المجموعات."},
  {k:"متعدد الأنماط",e:"🌈",c:"#c98a12",bg:"#fff6e3",tp:"تنويع الاستراتيجيات داخل الحصة الواحدة يناسبهن جميعًا."}];
+const OFFICIAL={"1": ["أسيل عبدالله القرشي", "ألين وليد الحربي", "تالة عتاب السيامي", "جانيت علي فردان", "جنى سعد زبرماوي", "جوري إبراهيم الغامدي", "رتيل مازن الأحمدي", "روين عبدالعزيز الحجاجي", "ريما عبدالله شريفي", "رينا يوسف الغامدي", "سمر مطلق المالكي", "سمية إبراهيم الشنقيطي", "غيداء سعيد الشريف", "فاطمة عبدالهادي القرني", "ليال يوسف لبان", "لين أنس التويم", "لين مجدي العتيبي", "نوف سامي جهري", "وجن ساعد الجحدلي", "إيلان سعد الصواط"], "2": ["ألمى أحمد الزهراني", "أمل لافي الظفيري", "إيمان شكري سين جي", "تالين بدر مداح", "تالين محمد نجار", "جنى عبدالستار جوهرجي", "دانة نايف الحربي", "ريما عبدالعزيز الزهراني", "شادن يوسف البطحي", "شهد عايد السلمي", "صبا عبدالله الزهراني", "لارين عبدالله فلمبان", "ليان رضا كردي", "مريم حمزة الشامي", "ملاذ بادر الدعجاني", "منار خالد نصيف", "ملاذ محمد القرني", "ألين عبدالرحمن القارحي", "ريما عبدالعزيز الغامدي"], "3": ["آية منصور مساوى", "أصايل تركي الثقفي", "أنجي حسين سمكري", "تولين محمد بناء", "حلا رائد خان", "حنين خالد العتيبي", "ديالا ياسين الحربي", "ريتال سلطان البنيان", "فاطمة سلطان الحازمي", "لجين عيسى نور ولي", "ليان عمار صميلي", "ليان يحيى الودعاني", "مريم عثمان هوساوي", "وتين عبدالوهاب الهاشمي الأمير", "ود مصطفى الفلاتي", "وفاء محمد الشهري", "عبير عثمان العمري", "فرح فارس بدر"]};
+const SHOW={"وتين عبدالوهاب الهاشمي الأمير":"وتين عبدالوهاب الهاشمي"};
+const nK=s=>String(s||"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/[ًٌٍَُِّْـ]/g,"").replace(/\s+/g," ").trim().toLowerCase();
+const ed=(x,y)=>{if(Math.abs(x.length-y.length)>1)return 9;const d=[...Array(y.length+1).keys()];for(let i=1;i<=x.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=y.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(x[i-1]===y[j-1]?0:1));p=t}}return d[y.length]};
+const tk=(x,y)=>x===y||(x.length>=4&&y.length>=4&&ed(x.replace(/^ال/,""),y.replace(/^ال/,""))<=1);
+function findOff(nm,c){const a=nK(nm).split(" ");if(a.length<2)return null;const L=OFFICIAL[c]||[];
+  return L.find(x=>nK(x)===a.join(" "))||L.find(x=>{const b=nK(x).split(" ");if(!tk(a[0],b[0]))return false;let j=1;for(let i=1;i<a.length;i++){while(j<b.length&&!tk(a[i],b[j]))j++;if(j>=b.length)return false;j++}return true})||null}
+function status(L,c){const L0=OFFICIAL[c]||[];if(!L0.length)return"";const done=new Set();L.forEach(s=>{const o=findOff(s.n,c);if(o)done.add(o)});
+  const D=L0.filter(x=>done.has(x)),N=L0.filter(x=>!done.has(x)),nm=x=>esc(SHOW[x]||x);
+  return `<div class="stt"><div class="sc ok"><h3>✅ نفّذن المقياس (${AR(D.length)} من ${AR(L0.length)})</h3>${D.length?`<ol>${D.map(x=>`<li>${nm(x)}</li>`).join("")}</ol>`:'<div class="nn">لا أحد بعد</div>'}</div>
+   <div class="sc no"><h3>⏳ لم ينفّذن بعد (${AR(N.length)})</h3>${N.length?`<ol>${N.map(x=>`<li>${nm(x)}</li>`).join("")}</ol>`:'<div class="nn">نفّذت جميع الطالبات 🎉</div>'}</div></div>`}
 let CLS="all",ROWS=null;
 function unlock(){if(document.getElementById("pin").value===PIN){try{sessionStorage.setItem("vpin","1")}catch(e){}document.getElementById("lock").remove();load()}else document.getElementById("er").textContent="الرقم السري غير صحيح"}
 document.getElementById("pin").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
@@ -55,12 +68,12 @@ try{if(sessionStorage.getItem("vpin")==="1"){document.getElementById("lock").rem
 function load(){const cb="cb"+Math.random().toString(36).slice(2),s=document.createElement("script");
   window[cb]=d=>{delete window[cb];s.remove();ROWS=d.rows||[];build()};s.onerror=()=>document.getElementById("app").innerHTML='<div class="empty">تعذّر التحميل — اضغطي «تحديث».</div>';
   s.src=API+"?tab="+encodeURIComponent(TAB)+"&callback="+cb+"&_="+Date.now();document.body.appendChild(s)}
-function section(L,title,brief){const n=L.length;
-  if(!n)return `<h2 class="sh">${title}</h2><div class="empty">لم تُجب طالبات هذا الفصل على المقياس بعد</div>`;
+function section(L,title,brief,c){const n=L.length,st=c?status(L,c):"";
+  if(!n)return `<h2 class="sh">${title}</h2>${st}<div class="empty">لم تُجب طالبات هذا الفصل على المقياس بعد</div>`;
   const G=S.map(x=>({...x,L:L.filter(s=>s.s===x.k)}));
   let a=0,r=80,C=2*Math.PI*r,seg="";
   G.forEach(g=>{const f=g.L.length/n;if(f>0)seg+=`<circle cx="100" cy="100" r="${r}" fill="none" stroke="${g.c}" stroke-width="34" stroke-dasharray="${C*f} ${C}" stroke-dashoffset="${-C*a}" transform="rotate(-90 100 100)"/>`;a+=f});
-  return `<h2 class="sh">${title}</h2><div class="sum"><div class="pie"><svg viewBox="0 0 200 200">${seg}</svg><div class="c"><b>${AR(n)}</b><small>طالبة</small></div></div>
+  return `<h2 class="sh">${title}</h2>${st}<div class="sum"><div class="pie"><svg viewBox="0 0 200 200">${seg}</svg><div class="c"><b>${AR(n)}</b><small>طالبة</small></div></div>
    <div class="cards">${G.map(g=>`<div class="st" style="--c:${g.c};--bg:${g.bg}"><div class="e">${g.e}</div><b>${AR(g.L.length)}</b><span>${g.k}</span><div style="font-weight:bold;color:#6a5a99">${AR(Math.round(100*g.L.length/n))}٪</div></div>`).join("")}</div></div>
    ${brief?"":`<div class="cols">${G.map(g=>`<div class="col" style="--c:${g.c};--bg:${g.bg}"><h3>${g.e} ${g.k} (${AR(g.L.length)})</h3>${g.L.length?`<ol>${g.L.map(s=>`<li>${esc(s.n)}</li>`).join("")}</ol>`:'<div style="color:#999">—</div>'}<div class="tp"><b>ما يناسبهن:</b> ${g.tp}</div></div>`).join("")}</div>`}`}
 function build(){
@@ -68,7 +81,7 @@ function build(){
   const all=Object.values(last).sort((a,b)=>a.n.localeCompare(b.n,"ar")),of=c=>all.filter(x=>x.c===c);
   document.getElementById("tabs").innerHTML=[["all","📚 كل الفصول"],["1","أولى ١"],["2","أولى ٢"],["3","أولى ٣"]].map(([c,t])=>`<button class="tab ${c===CLS?"on":""}" onclick="CLS='${c}';build()">${t}</button>`).join("");
   document.getElementById("app").innerHTML=CLS==="all"
-   ?section(all.filter(x=>x.c),"الملخص العام — الفصول الثلاثة",1)+["1","2","3"].map(c=>`<div class="pb">${section(of(c),"فصل أولى "+AR(c))}</div>`).join("")
-   :section(of(CLS),"فصل أولى "+AR(CLS));
+   ?section(all.filter(x=>x.c),"الملخص العام — الفصول الثلاثة",1)+["1","2","3"].map(c=>`<div class="pb">${section(of(c),"فصل أولى "+AR(c),0,c)}</div>`).join("")
+   :section(of(CLS),"فصل أولى "+AR(CLS),0,CLS);
 }
 </script></body></html>
